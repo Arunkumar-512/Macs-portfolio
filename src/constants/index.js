@@ -35,7 +35,7 @@ const navIcons = [
   },
 ];
 
-const dockApps = [
+const docsApps = [
   {
     id: "finder",
     name: "Portfolio", // was "Finder"
@@ -207,7 +207,7 @@ const gallery = [
 export {
   navLinks,
   navIcons,
-  dockApps,
+  docsApps,
   blogPosts,
   techStack,
   socials,
