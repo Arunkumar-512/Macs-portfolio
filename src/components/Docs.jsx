@@ -4,8 +4,10 @@ import { gsap } from 'gsap';
 
 import { docsApps } from '#constants'
 import { useGSAP } from '@gsap/react';
+import useWindowStore from '#store/window';
 
 const Docs = () => {
+  const {openWindow,closeWindow,windows} = useWindowStore();
   const docsRef = useRef(null);
 
   useGSAP(() => {
@@ -56,7 +58,24 @@ const Docs = () => {
 
 
 
-  const toggleApp = (app) => { }
+  const toggleApp = (app) => { 
+    if (!app.canOpen) return;
+
+    const window = windows[app.id];
+
+    if(!window) {
+      console.error(`Window with id ${app.id} not found.`);
+      return;
+    }
+
+    if(window.isOpen){
+      closeWindow(app.id);
+    }else{
+      openWindow(app.id);
+    }
+    
+    console.log(windows)
+  }
   return (
 
 
