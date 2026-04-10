@@ -74,35 +74,43 @@ const docsApps = [
   },
 ];
 
-const blogPosts = [
-  {
-    id: 1,
-    date: "Sep 2, 2025",
+  const blogPosts = [
+    {
+      id: 1,
+      date: " Jan 18, 2026",
+      title:
+        "Understanding Async/Await in JavaScript with Practical Examples",
+      image: "/images/blog1.png",
+      link: "https://www.freecodecamp.org/news/async-await-javascript-tutorial/",
+    },
+    {
+      id: 2,
+      date: "Jan 10, 2026",
+      title: "CSS Grid vs Flexbox: When to Use Which Layout System",
+      image: "/images/blog2.png",
+      link: "https://css-tricks.com/css-grid-vs-flexbox/",
+    },
+    {
+      id: 3,
+      date: "Dec 28, 2025",
+      title: "A Complete Guide to Modern React Patterns and Best Practices",
+      image: "/images/blog3.png",
+    link: "https://www.smashingmagazine.com/2025/modern-react-patterns-best-practices/",
+    },
+    {
+    id: 4,
+    date: "Dec 15, 2025",
     title:
-      "TypeScript Explained: What It Is, Why It Matters, and How to Master It",
-    image: "/images/blog1.png",
-    link: "https://jsmastery.com/blog/typescript-explained-what-it-is-why-it-matters-and-how-to-master-it",
+      "JavaScript ES6 Features You Should Know in 2025",
+    image: "/images/blog4.png",
+    link: "https://www.freecodecamp.org/news/es6-javascript-features/",
   },
-  {
-    id: 2,
-    date: "Aug 28, 2025",
-    title: "The Ultimate Guide to Mastering Three.js for 3D Development",
-    image: "/images/blog2.png",
-    link: "https://jsmastery.com/blog/the-ultimate-guide-to-mastering-three-js-for-3d-development",
-  },
-  {
-    id: 3,
-    date: "Aug 15, 2025",
-    title: "The Ultimate Guide to Mastering GSAP Animations",
-    image: "/images/blog3.png",
-    link: "https://jsmastery.com/blog/the-ultimate-guide-to-mastering-gsap-animations",
-  },
-];
+  ];
 
 const techStack = [
   {
     category: "Frontend",
-    items: ["React.js", "Next.js", "TypeScript"],
+    items: ["React.js", "Next.js", "TypeScript","JavaScript"],
   },
   {
     category: "Mobile",
@@ -110,15 +118,15 @@ const techStack = [
   },
   {
     category: "Styling",
-    items: ["Tailwind CSS", "Sass", "CSS"],
+    items: ["Tailwind CSS", "CSS"],
   },
   {
     category: "Backend",
-    items: ["Node.js", "Express", "NestJS", "Hono"],
+    items: ["Node.js", "Express",],
   },
   {
     category: "Database",
-    items: ["MongoDB", "PostgreSQL"],
+    items: ["MongoDB", "PostgreSQL","Supabase",],
   },
   {
     category: "Dev Tools",
@@ -132,28 +140,28 @@ const socials = [
     text: "Github",
     icon: "/icons/github.svg",
     bg: "#f4656b",
-    link: "https://github.com/JavaScript-Mastery-Pro",
+    link: "https://github.com/Arunkumar-512",
   },
   {
     id: 2,
     text: "Platform",
     icon: "/icons/atom.svg",
     bg: "#4bcb63",
-    link: "https://jsmastery.com/",
+    link: "",
   },
   {
     id: 3,
     text: "Twitter/X",
     icon: "/icons/twitter.svg",
     bg: "#ff866b",
-    link: "https://x.com/jsmasterypro",
+    link: "",
   },
   {
     id: 4,
     text: "LinkedIn",
     icon: "/icons/linkedin.svg",
     bg: "#05b6f6",
-    link: "https://www.linkedin.com/company/javascriptmastery/posts/?feedView=all",
+    link: "https://www.linkedin.com/in/arun-dasari-78b330363/",
   },
 ];
 
@@ -215,7 +223,7 @@ export {
   gallery,
 };
 
-const WORK_LOCATION = {
+const WORK_LOCATION = { 
   id: 1,
   type: "work",
   name: "Work",
@@ -225,10 +233,10 @@ const WORK_LOCATION = {
     // ▶ Project 1
     {
       id: 5,
-      name: "Nike Ecommerce Website Application",
+      name: "E-commerce website",
       icon: "/images/folder.png",
       kind: "folder",
-      position: "top-10 left-5", // icon position inside Finder
+      position: { top: "30px", left: "40px" },// icon position inside Finder
       windowPosition: "top-[5vh] left-5", // optional: Finder window position
       children: [
         {
@@ -239,10 +247,7 @@ const WORK_LOCATION = {
           fileType: "txt",
           position: "top-5 left-10",
           description: [
-            "The Nike eCommerce website is a sleek and modern platform designed for shopping the latest Nike collections.",
-            "Instead of a simple online store, it delivers an immersive experience with bold visuals, interactive product displays, and smooth navigation.",
-            "Think of it like walking into a flagship Nike store—but right from your phone or laptop.",
-            "It's built with Next.js and Tailwind, ensuring fast performance, responsive design, and a clean, premium look.",
+            "A modern e-commerce website built with responsive design and secure checkout functionality, offering a seamless shopping experience. Designed with scalability in mind to handle product listings, cart management, and user authentication",
           ],
         },
         {
@@ -251,7 +256,7 @@ const WORK_LOCATION = {
           icon: "/images/safari.png",
           kind: "file",
           fileType: "url",
-          href: "https://youtu.be/fZdTYswuZjU?si=Awjl-pIst9e09_UU",
+          href: "",
           position: "top-10 right-20",
         },
         {
@@ -265,11 +270,11 @@ const WORK_LOCATION = {
         },
         {
           id: 5,
-          name: "Design.fig",
+          name: "Github",
           icon: "/images/plain.png",
           kind: "file",
           fileType: "fig",
-          href: "https://google.com",
+          href: "https://github.com/Arunkumar-512/MERN-STACK-Ecommerce",
           position: "top-60 right-20",
         },
       ],
@@ -278,38 +283,35 @@ const WORK_LOCATION = {
     // ▶ Project 2
     {
       id: 6,
-      name: "AI Resume Analyzer",
+      name: "Hotel Management System",
       icon: "/images/folder.png",
       kind: "folder",
-      position: "top-52 right-80",
+      position: { top: "150px", left: "30px" },// icon position inside Finder
       windowPosition: "top-[20vh] left-7",
       children: [
         {
           id: 1,
-          name: "AI Resume Analyzer Project.txt",
+          name: "Hotel Management System",
           icon: "/images/txt.png",
           kind: "file",
           fileType: "txt",
           position: "top-5 right-10",
           description: [
-            "AI Resume Analyzer is a smart tool that helps you perfect your resume with instant feedback.",
-            "Instead of guessing what recruiters want, you get AI-powered insights on keywords, formatting, and overall impact.",
-            "Think of it like having a career coach—pointing out strengths, fixing weaknesses, and boosting your chances of landing interviews.",
-            "It's built with Next.js and Tailwind, so it runs fast, looks professional, and works seamlessly on any device.",
+            "With modern frontend and backend technologies, it includes authentication, secure payments, and an admin dashboard for hotel management.",
           ],
         },
         {
           id: 2,
-          name: "ai-resume-analyzer.com",
+          name: "Hotel Management System",
           icon: "/images/safari.png",
           kind: "file",
           fileType: "url",
-          href: "https://youtu.be/iYOz165wGkQ?si=R1hs8Legl200m0Cl",
+          href: "",
           position: "top-20 left-20",
         },
         {
           id: 4,
-          name: "ai-resume-analyzer.png",
+          name: "Hotel Management System",
           icon: "/images/image.png",
           kind: "file",
           fileType: "img",
@@ -322,7 +324,7 @@ const WORK_LOCATION = {
           icon: "/images/plain.png",
           kind: "file",
           fileType: "fig",
-          href: "https://google.com",
+          href: "https://github.com/Arunkumar-512/Hotel-booking-mangement",
           position: "top-60 left-5",
         },
       ],
@@ -331,24 +333,21 @@ const WORK_LOCATION = {
     // ▶ Project 3
     {
       id: 7,
-      name: "Food Delivery App",
+      name: "3D Game Website",
       icon: "/images/folder.png",
       kind: "folder",
-      position: "top-10 left-80",
+      position: { top: "300px", left: "50px" },// icon position inside Finder
       windowPosition: "top-[33vh] left-7",
       children: [
         {
           id: 1,
-          name: "Food Delivery App Project.txt",
+          name: "3D Game Website",
           icon: "/images/txt.png",
           kind: "file",
           fileType: "txt",
           position: "top-5 left-10",
           description: [
-            "Our Food Delivery App is a fast and convenient way to order meals from your favorite restaurants.",
-            "Instead of making calls or waiting in line, you can browse menus, customize orders, and track deliveries in real time.",
-            "Think of it like having your favorite restaurants in your pocket—ready to deliver anytime, anywhere.",
-            "It’s built with React Native, so it works smoothly on both iOS and Android with a clean, modern design.",
+            "An interactive 3D Gaming website built with Three.js and React Three Fiber, featuring animated models and smooth camera transitions. Designed to create an immersive experience while showcasing projects, skills, and creativity.",
           ],
         },
         {
@@ -357,12 +356,12 @@ const WORK_LOCATION = {
           icon: "/images/safari.png",
           kind: "file",
           fileType: "url",
-          href: "https://youtu.be/LKrX390fJMw?si=cExkuVhf2DTV9G2-",
+          href: "",
           position: "top-10 right-20",
         },
         {
           id: 4,
-          name: "food-delivery-app.png",
+          name: "3D Game Website",
           icon: "/images/image.png",
           kind: "file",
           fileType: "img",
@@ -375,7 +374,203 @@ const WORK_LOCATION = {
           icon: "/images/plain.png",
           kind: "file",
           fileType: "fig",
-          href: "https://google.com",
+          href: "https://github.com/Arunkumar-512/3D-Game-website",
+          position: "top-60 right-20",
+        },
+      ],
+    },
+     // ▶ Project 3
+    {
+      id: 8,
+      name: "Ecommerce Bakery's point",
+      icon: "/images/folder.png",
+      kind: "folder",
+      position: { top: "300px", right: "40px" },
+      windowPosition: "top-[33vh] left-7",
+      children: [
+        {
+          id: 1,
+          name: "3D Game Website",
+          icon: "/images/txt.png",
+          kind: "file",
+          fileType: "txt",
+          position: "top-5 left-10",
+          description: [
+            "An interactive 3D Gaming website built with Three.js and React Three Fiber, featuring animated models and smooth camera transitions. Designed to create an immersive experience while showcasing projects, skills, and creativity.",
+          ],
+        },
+        {
+          id: 2,
+          name: "food-delivery-app.com",
+          icon: "/images/safari.png",
+          kind: "file",
+          fileType: "url",
+          href: "",
+          position: "top-10 right-20",
+        },
+        {
+          id: 4,
+          name: "3D Game Website",
+          icon: "/images/image.png",
+          kind: "file",
+          fileType: "img",
+          position: "top-52 right-80",
+          imageUrl: "/images/project-3.png",
+        },
+        {
+          id: 5,
+          name: "Design.fig",
+          icon: "/images/plain.png",
+          kind: "file",
+          fileType: "fig",
+          href: "https://github.com/Arunkumar-512/3D-Game-website",
+          position: "top-60 right-20",
+        },
+      ],
+    },
+     // ▶ Project 3
+    {
+      id: 9,
+      name: "AI thumbnail Generator ",
+      icon: "/images/folder.png",
+      kind: "folder",
+      position: { top: "30px", right: "40px" },
+      windowPosition: "top-[33vh] left-7",
+      children: [
+        {
+          id: 1,
+          name: "3D Game Website",
+          icon: "/images/txt.png",
+          kind: "file",
+          fileType: "txt",
+          position: "top-5 left-10",
+          description: [
+            "An interactive 3D Gaming website built with Three.js and React Three Fiber, featuring animated models and smooth camera transitions. Designed to create an immersive experience while showcasing projects, skills, and creativity.",
+          ],
+        },
+        {
+          id: 2,
+          name: "food-delivery-app.com",
+          icon: "/images/safari.png",
+          kind: "file",
+          fileType: "url",
+          href: "",
+          position: "top-10 right-20",
+        },
+        {
+          id: 4,
+          name: "3D Game Website",
+          icon: "/images/image.png",
+          kind: "file",
+          fileType: "img",
+          position: "top-52 right-80",
+          imageUrl: "/images/project-3.png",
+        },
+        {
+          id: 5,
+          name: "Design.fig",
+          icon: "/images/plain.png",
+          kind: "file",
+          fileType: "fig",
+          href: "https://github.com/Arunkumar-512/3D-Game-website",
+          position: "top-60 right-20",
+        },
+      ],
+    },
+     // ▶ Project 3
+    {
+      id: 10,
+      name: "Ecommerce website ",
+      icon: "/images/folder.png",
+      kind: "folder",
+      position: { top: "130px", right: "50px" },
+      windowPosition: "top-[33vh] left-7",
+      children: [
+        {
+          id: 1,
+          name: "3D Game Website",
+          icon: "/images/txt.png",
+          kind: "file",
+          fileType: "txt",
+          position: "top-5 left-10",
+          description: [
+            "An interactive 3D Gaming website built with Three.js and React Three Fiber, featuring animated models and smooth camera transitions. Designed to create an immersive experience while showcasing projects, skills, and creativity.",
+          ],
+        },
+        {
+          id: 2,
+          name: "food-delivery-app.com",
+          icon: "/images/safari.png",
+          kind: "file",
+          fileType: "url",
+          href: "",
+          position: "top-10 right-20",
+        },
+        {
+          id: 4,
+          name: "3D Game Website",
+          icon: "/images/image.png",
+          kind: "file",
+          fileType: "img",
+          position: "top-52 right-80",
+          imageUrl: "/images/project-3.png",
+        },
+        {
+          id: 5,
+          name: "Design.fig",
+          icon: "/images/plain.png",
+          kind: "file",
+          fileType: "fig",
+          href: "https://github.com/Arunkumar-512/3D-Game-website",
+          position: "top-60 right-20",
+        },
+      ],
+    },
+     // ▶ Project 3
+    {
+      id: 11,
+      name: "File vault ",
+      icon: "/images/folder.png",
+      kind: "folder",
+      position: { top: "30px", left: "250px" },
+      windowPosition: "top-[33vh] left-7",
+      children: [
+        {
+          id: 1,
+          name: "3D Game Website",
+          icon: "/images/txt.png",
+          kind: "file",
+          fileType: "txt",
+          position: "top-5 left-10",
+          description: [
+            "An interactive 3D Gaming website built with Three.js and React Three Fiber, featuring animated models and smooth camera transitions. Designed to create an immersive experience while showcasing projects, skills, and creativity.",
+          ],
+        },
+        {
+          id: 2,
+          name: "food-delivery-app.com",
+          icon: "/images/safari.png",
+          kind: "file",
+          fileType: "url",
+          href: "",
+          position: "top-10 right-20",
+        },
+        {
+          id: 4,
+          name: "3D Game Website",
+          icon: "/images/image.png",
+          kind: "file",
+          fileType: "img",
+          position: "top-52 right-80",
+          imageUrl: "/images/project-3.png",
+        },
+        {
+          id: 5,
+          name: "Design.fig",
+          icon: "/images/plain.png",
+          kind: "file",
+          fileType: "fig",
+          href: "https://github.com/Arunkumar-512/3D-Game-website",
           position: "top-60 right-20",
         },
       ],
@@ -397,7 +592,7 @@ const ABOUT_LOCATION = {
       kind: "file",
       fileType: "img",
       position: "top-10 left-5",
-      imageUrl: "/images/adrian.jpg",
+      imageUrl: "/images/bunty.png",
     },
     {
       id: 2,
@@ -427,10 +622,10 @@ const ABOUT_LOCATION = {
       subtitle: "Meet the Developer Behind the Code",
       image: "/images/adrian.jpg",
       description: [
-        "Hey! I’m Adrian 👋, a web developer who enjoys building sleek, interactive websites that actually work well.",
+        "Hey! I’m Arun 👋, a web developer who enjoys building sleek, interactive websites that actually work well.",
         "I specialize in JavaScript, React, and Next.js—and I love making things feel smooth, fast, and just a little bit delightful.",
         "I’m big on clean UI, good UX, and writing code that doesn’t need a search party to debug.",
-        "Outside of dev work, you'll find me tweaking layouts at 2AM, sipping overpriced coffee, or impulse-buying gadgets I absolutely convinced myself I needed 😅",
+        
       ],
     },
   ],
@@ -492,15 +687,23 @@ export const locations = {
 
 const INITIAL_Z_INDEX = 1000;
 
-const WINDOW_CONFIG = {
-  finder: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  contact: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  resume: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  safari: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  photos: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  terminal: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  txtfile: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-  imgfile: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
+const createWindow = () => ({
+  isOpen: false,
+  isMinimized: false,
+  isMaximized: false,
+  zIndex: INITIAL_Z_INDEX,
+  data: null,
+});
+
+const WINDOW_CONFIG = { 
+  finder: createWindow(),
+  contact: createWindow(),
+  resume: createWindow(),
+  safari: createWindow(),
+  photos: createWindow(),
+  terminal: createWindow(),
+  txtfile: createWindow(),
+  imgfile: createWindow(),
 };
 
 export { INITIAL_Z_INDEX, WINDOW_CONFIG };
