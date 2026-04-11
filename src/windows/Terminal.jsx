@@ -1,58 +1,62 @@
 import { WindowControls } from "#components";
 import { techStack } from "#constants";
-import WindowWrapper from "#hoc/WindowWrapper"
+import WindowWrapper from "#hoc/WindowWrapper";
 import { Check, Flag } from "lucide-react";
 
 const Terminal = () => {
   return (
     <>
+      {/* HEADER */}
       <div id="window-header">
-        <WindowControls target ="terminal"/>
+        <WindowControls target="terminal" />
         <h2>Tech Stack</h2>
       </div>
 
+      {/* BODY */}
       <div className="techstack">
-        <p>
-          <span className="font-bold">@Arun %</span>
-          show tech stack
+        <p className="command">
+          <span>@Arun %</span> show tech stack
         </p>
+
+        {/* LABEL */}
         <div className="label">
-          <p className="w-32">Category</p>
+          <p>Category</p>
           <p>Technologies</p>
         </div>
 
+        {/* CONTENT */}
         <ul className="content">
-          {techStack.map(({category,items})=>(
-            <li key={category} className="flex items-center">
-              <Check className="check" size={19} />
+          {techStack.map(({ category, items }) => (
+            <li key={category}>
+              <Check className="check" />
+
               <h3>{category}</h3>
-              <ul>
-                {items.map((item,i)=>(
-                  <li key={i}>
+
+              <div className="items">
+                {items.map((item, i) => (
+                  <span key={i}>
                     {item}
-                    {i <items.length -1 ? ',': ''}
-                  </li>
+                    {i < items.length - 1 && ","}
+                  </span>
                 ))}
-              </ul>
+              </div>
             </li>
           ))}
         </ul>
 
-
+        {/* FOOTER */}
         <div className="footnote">
           <p>
-            <Check size={20} /> 5 of 5 stacks loaded successfully (100%)
+            <Check /> 5 of 5 stacks loaded successfully (100%)
           </p>
-          <p className="text-black">
-            <Flag size={15} fill="black" />
-            Render time: 0.023s
+          <p>
+            <Flag /> Render time: 0.023s
           </p>
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
 const TerminalWindow = WindowWrapper(Terminal, "terminal");
-
 export default TerminalWindow;

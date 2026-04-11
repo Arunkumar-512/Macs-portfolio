@@ -245,21 +245,25 @@ nav time {
   /* 📱 mobile spacing */
   @apply max-sm:px-3 max-sm:py-2;
 }
-
 /* 🔥 SAFARI WINDOW */
 #safari {
   @apply w-4xl absolute top-40 left-2/12 
   bg-white shadow-2xl drop-shadow-2xl 
   rounded-xl overflow-hidden;
 
-  /* 📱 MOBILE FULL SCREEN EXPERIENCE */
-  @apply max-sm:w-full max-sm:h-[85vh] 
-  max-sm:top-12 max-sm:left-0 
-  max-sm:rounded-none max-sm:border-t 
-  max-sm:border-white/10;
+  /* 📱 MOBILE FULL SCREEN */
+  @apply max-sm:w-full max-sm:h-[90vh] 
+  max-sm:top-10 max-sm:left-0 
+  max-sm:rounded-none 
+  max-sm:flex max-sm:flex-col;
 
-  /* 🔥 glass feel on mobile */
+  /* glass feel */
   @apply max-sm:bg-white/10 max-sm:backdrop-blur-2xl;
+}
+
+/* 🔥 HEADER MOBILE COMPACT */
+#safari #window-header {
+  @apply max-sm:flex max-sm:items-center max-sm:justify-between;
 }
 
 /* 🔥 SEARCH BAR */
@@ -268,13 +272,12 @@ nav time {
   bg-white border border-gray-300 
   rounded-lg px-3 py-2;
 
-  /* 📱 mobile full width */
-  @apply max-sm:w-full max-sm:gap-2 max-sm:px-2 max-sm:py-1.5;
+  /* 📱 MOBILE */
+  @apply max-sm:w-full max-sm:gap-2 max-sm:px-2 max-sm:py-1;
 
   input {
     @apply placeholder:text-gray-400 text-sm;
 
-    /* 📱 better readability */
     @apply max-sm:text-xs;
   }
 }
@@ -283,175 +286,228 @@ nav time {
 #safari .blog {
   @apply bg-white p-10 max-w-3xl mx-auto;
 
-  /* 📱 mobile scrollable + padding */
-  @apply max-sm:bg-transparent max-sm:p-4 max-sm:max-w-full max-sm:overflow-y-auto;
+  /* 📱 MOBILE SCROLL FIX */
+  @apply max-sm:flex-1 max-sm:overflow-y-auto 
+  max-sm:bg-transparent max-sm:p-3 max-sm:max-w-full;
+
+  -webkit-overflow-scrolling: touch;
 }
 
+/* 🔥 TITLE */
 #safari .blog h2 {
   @apply text-xl font-bold text-pink-600 mb-10;
 
-  /* 📱 scale */
-  @apply max-sm:text-lg max-sm:mb-6;
+  @apply max-sm:text-base max-sm:mb-4;
 }
 
 /* 🔥 BLOG POST */
 #safari .blog .blog-post {
-  @apply grid grid-cols-12 space-x-5;
+  @apply grid grid-cols-12 gap-5;
 
-  /* 📱 STACK LAYOUT */
-  @apply max-sm:grid-cols-1 max-sm:space-x-0 max-sm:gap-3;
+  /* 📱 STACK */
+  @apply max-sm:grid-cols-1 max-sm:gap-3;
 }
 
+/* 🔥 IMAGE */
 #safari .blog .blog-post img {
-  @apply size-full rounded-md object-cover;
+  @apply w-full h-40 rounded-md object-cover;
 
-  /* 📱 better height */
-  @apply max-sm:h-40;
+  @apply max-sm:h-32;
 }
 
+/* 🔥 CONTENT */
 #safari .blog .blog-post .content {
   @apply col-span-10 space-y-3;
 
-  /* 📱 full width */
   @apply max-sm:col-span-1 max-sm:space-y-2;
 }
 
+/* 🔥 TEXT */
 #safari .blog .blog-post .content p {
   @apply text-xs text-gray-500;
 
-  /* 📱 readability */
-  @apply max-sm:text-[11px];
+  @apply max-sm:text-[10px];
 }
 
 #safari .blog .blog-post .content h3 {
   @apply font-semibold text-base text-gray-800;
 
-  /* 📱 scale */
   @apply max-sm:text-sm;
 }
 
 #safari .blog .blog-post .content a {
-  @apply text-blue-600 text-xs hover:underline flex items-center gap-3;
+  @apply text-blue-600 text-xs flex items-center gap-2;
 
-  /* 📱 compact */
-  @apply max-sm:text-[11px] max-sm:gap-2;
+  @apply max-sm:text-[10px];
 }
 
- /* ================= TERMINAL ================= */
-#terminal {
-  @apply w-xl absolute top-32 left-1/12 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+ #terminal {
+  @apply w-xl absolute top-32 left-1/12 
+  bg-black text-green-400 shadow-2xl rounded-xl overflow-hidden;
 
   /* 📱 MOBILE */
-  @apply max-sm:w-full max-sm:h-[80vh] 
+  @apply max-sm:w-full max-sm:h-[85vh] 
   max-sm:top-14 max-sm:left-0 
   max-sm:rounded-none 
-  max-sm:bg-black/40 max-sm:backdrop-blur-2xl;
-
-  h2 {
-    @apply font-bold text-sm text-center w-full;
-
-    @apply max-sm:text-xs;
-  }
-
-  .techstack {
-    @apply text-sm font-roboto p-5;
-
-    @apply max-sm:p-3 max-sm:text-xs max-sm:overflow-y-auto;
-
-    .label {
-      @apply flex items-center ms-10 mt-7;
-
-      @apply max-sm:ms-2 max-sm:mt-4;
-    }
-
-    .content {
-      @apply py-5 my-5 border-y border-dashed space-y-1;
-
-      @apply max-sm:py-3 max-sm:my-3;
-
-      li {
-        .check {
-          @apply text-[#00A154] w-5;
-
-          @apply max-sm:w-4;
-        }
-
-        h3 {
-          @apply font-semibold text-[#00A154] w-32 ms-5;
-
-          @apply max-sm:w-auto max-sm:ms-2 max-sm:text-xs;
-        }
-
-        ul {
-          @apply flex items-center gap-3;
-
-          @apply max-sm:gap-2 flex-wrap;
-        }
-      }
-    }
-
-    .footnote {
-      @apply text-[#00A154] space-y-1;
-
-      p {
-        @apply flex items-center;
-
-        svg {
-          @apply w-5 me-5;
-
-          @apply max-sm:w-4 max-sm:me-2;
-        }
-      }
-    }
-  }
+  max-sm:bg-black/70 max-sm:backdrop-blur-2xl;
 }
+
+/* HEADER */
+#terminal h2 {
+  @apply font-semibold text-sm text-center w-full text-white;
+
+  @apply max-sm:text-xs;
+}
+
+/* BODY */
+#terminal .techstack {
+  @apply text-sm font-mono p-5 leading-relaxed;
+
+  @apply max-sm:p-3 max-sm:text-xs max-sm:overflow-y-auto;
+}
+
+/* COMMAND LINE */
+#terminal .command {
+  @apply mb-4;
+}
+
+#terminal .command span {
+  @apply font-bold text-green-500;
+}
+
+/* LABEL */
+#terminal .label {
+  @apply flex justify-between text-gray-400 text-xs mb-3;
+
+  @apply max-sm:flex-col max-sm:gap-1;
+}
+
+/* CONTENT */
+#terminal .content {
+  @apply space-y-4 border-y border-dashed border-green-500/30 py-4;
+
+  @apply max-sm:space-y-3;
+}
+
+#terminal .content li {
+  @apply flex items-start gap-3;
+}
+
+/* CHECK ICON */
+#terminal .check {
+  @apply text-green-500 w-4 mt-[2px] shrink-0;
+}
+
+/* CATEGORY */
+#terminal .content h3 {
+  @apply text-green-400 font-semibold min-w-[110px];
+
+  @apply max-sm:min-w-[80px] max-sm:text-xs;
+}
+
+/* ITEMS */
+#terminal .items {
+  @apply flex flex-wrap gap-1 text-gray-200 leading-snug;
+}
+
+/* FOOTER */
+#terminal .footnote {
+  @apply mt-4 text-green-500 text-xs space-y-2;
+}
+
+#terminal .footnote p {
+  @apply flex items-center gap-2 text-green-400;
+}
+
 
 /* ================= CONTACT ================= */
 #contact {
-  @apply max-w-2xl absolute top-60 left-5/12 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+  @apply max-w-2xl absolute top-60 left-5/12 
+  bg-white shadow-2xl rounded-xl overflow-hidden;
 
   /* 📱 MOBILE */
-  @apply max-sm:w-full max-sm:top-16 max-sm:left-0 
-  max-sm:rounded-none max-sm:p-3 
+  @apply max-sm:w-full max-sm:h-[85vh] 
+  max-sm:top-14 max-sm:left-0 
+  max-sm:rounded-none 
   max-sm:bg-white/10 max-sm:backdrop-blur-2xl;
+}
 
-  h2 {
-    @apply font-bold text-sm text-center w-full;
+/* HEADER */
+#contact h2 {
+  @apply font-semibold text-sm text-center w-full;
 
-    @apply max-sm:text-xs;
-  }
+  @apply max-sm:text-xs;
+}
 
-  h3 {
-    @apply text-xl font-semibold;
+/* BODY */
+#contact .contact-body {
+  @apply p-6 flex flex-col items-center gap-6;
 
-    @apply max-sm:text-base;
-  }
+  @apply max-sm:p-4 max-sm:gap-4 max-sm:overflow-y-auto;
+}
 
-  ul {
-    @apply flex items-center gap-3;
+/* PROFILE */
+#contact .profile {
+  @apply flex flex-col items-center text-center gap-3;
+}
 
-    /* 📱 STACK */
-    @apply max-sm:flex-col max-sm:gap-3;
+/* AVATAR */
+#contact .avatar {
+  @apply w-24 h-24 rounded-full object-cover shadow-md;
 
-    li {
-      @apply rounded-lg p-3 w-60 hover:-translate-y-0.5 hover:scale-105 origin-center transition-all duration-300;
+  @apply max-sm:w-20 max-sm:h-20;
+}
 
-      /* 📱 FULL WIDTH */
-      @apply max-sm:w-full max-sm:p-2;
+/* TITLE */
+#contact h3 {
+  @apply text-xl font-semibold;
 
-      a {
-        @apply space-y-5;
+  @apply max-sm:text-base;
+}
 
-        @apply max-sm:space-y-2;
-      }
+/* DESCRIPTION */
+#contact .desc {
+  @apply text-gray-600 text-sm max-w-md;
 
-      p {
-        @apply font-semibold text-sm text-white;
+  @apply max-sm:text-xs;
+}
 
-        @apply max-sm:text-xs;
-      }
-    }
-  }
+/* EMAIL */
+#contact .email {
+  @apply text-blue-600 text-sm font-medium;
+
+  @apply max-sm:text-xs;
+}
+
+/* SOCIAL LIST */
+#contact .socials {
+  @apply grid grid-cols-2 gap-4 w-full;
+
+  /* 📱 stack nicely */
+  @apply max-sm:grid-cols-1 max-sm:gap-3;
+}
+
+/* SOCIAL CARD */
+#contact .socials li {
+  @apply rounded-lg p-4 transition-all duration-300 
+  hover:scale-105 hover:-translate-y-1 shadow-md;
+}
+
+/* LINK */
+#contact .socials a {
+  @apply flex items-center gap-3;
+}
+
+/* ICON */
+#contact .socials img {
+  @apply w-6 h-6;
+}
+
+/* TEXT */
+#contact .socials p {
+  @apply font-medium text-white text-sm;
+
+  @apply max-sm:text-xs;
 }
 
 /* ================= PHOTOS ================= */
@@ -543,76 +599,83 @@ nav time {
       @apply max-sm:text-xs;
     }
   }
+}/* ================= FINDER ================= */
+#finder {
+  @apply absolute w-4xl left-32 top-16
+  rounded-xl overflow-hidden shadow-2xl;
+
+  /* 📱 MOBILE WINDOW */
+  @apply max-sm:w-[95%] max-sm:left-1/2 max-sm:-translate-x-1/2
+  max-sm:top-14 max-sm:h-[85vh] max-sm:flex max-sm:flex-col;
 }
 
-/* ================= FINDER ================= */
-#finder {
-  @apply absolute w-3xl left-40 top-20 shadow-2xl drop-shadow-2xl overflow-hidden rounded-xl;
+/* ================= SIDEBAR ================= */
+#finder .sidebar {
+  @apply w-52 bg-gray-100/80 backdrop-blur-xl
+  border-r border-gray-200
+  flex flex-col p-4 gap-4;
 
-  /* 📱 MOBILE */
-  @apply max-sm:w-[95%] max-sm:left-1/2 max-sm:-translate-x-1/2 
-  max-sm:top-14 max-sm:h-[85vh] 
-  max-sm:bg-white/10 max-sm:backdrop-blur-2xl;
+  /* 📱 TOP BAR */
+  @apply max-sm:w-full max-sm:flex-row max-sm:overflow-x-auto
+  max-sm:border-r-0 max-sm:border-b max-sm:gap-2 max-sm:p-2;
+}
 
-  .sidebar {
-    @apply w-48 bg-gray-50 border-r border-gray-200 flex flex-col p-5 space-y-3;
+#finder .sidebar ul {
+  @apply flex flex-col gap-1;
 
-    /* 📱 horizontal sidebar */
-    @apply max-sm:w-full max-sm:flex-row max-sm:overflow-x-auto 
-    max-sm:space-y-0 max-sm:gap-2 max-sm:border-r-0 max-sm:border-b max-sm:p-2;
+  /* 📱 horizontal */
+  @apply max-sm:flex-row max-sm:gap-2;
+}
 
-    h3 {
-      @apply text-xs font-medium text-gray-400 mb-1;
+#finder .sidebar li {
+  @apply flex items-center gap-2 px-3 py-2 rounded-md
+  cursor-pointer transition-all duration-200 whitespace-nowrap;
 
-      @apply max-sm:hidden;
-    }
+  @apply hover:bg-gray-200;
+}
 
-    ul {
-      @apply space-y-1;
+#finder .sidebar li.active {
+  @apply bg-blue-500 text-white;
+}
 
-      @apply max-sm:flex max-sm:gap-2 max-sm:space-y-0;
+/* ================= CONTENT ================= */
+#finder .content {
+  @apply relative w-full h-full bg-white flex-1;
 
-      .active {
-        @apply bg-blue-100 text-blue-700;
-      }
+  /* 📱 MOBILE GRID */
+  @apply max-sm:grid max-sm:grid-cols-3 max-sm:gap-4 
+  max-sm:justify-items-center max-sm:p-3 
+  max-sm:overflow-y-auto;
+}
 
-      .not-active {
-        @apply text-gray-700 hover:bg-gray-200;
-      }
+/* ================= FILE ITEMS ================= */
+#finder .finder-item {
+  @apply absolute flex flex-col items-center gap-2
+  cursor-pointer select-none;
+}
 
-      li {
-        @apply flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors;
-
-        @apply max-sm:px-2 max-sm:py-1 max-sm:text-xs;
-      }
-    }
+/* 📱 MOBILE FIX (CRITICAL) */
+@media (max-width: 640px) {
+  #finder .finder-item {
+    position: static !important;
+    transform: none !important;
   }
+}
 
-  .content {
-    @apply flex-1 p-8 bg-white max-w-2xl relative;
+/* ================= ICON ================= */
+#finder .finder-item img {
+  @apply w-14 h-14 object-contain transition-transform duration-200;
 
-    /* 📱 scrollable area */
-    @apply max-sm:p-3 max-sm:max-w-full max-sm:h-full max-sm:overflow-auto max-sm:bg-transparent;
+  /* 📱 smaller */
+  @apply max-sm:w-12 max-sm:h-12;
+}
 
-    li {
-      @apply absolute flex items-center flex-col gap-3;
+/* ================= LABEL ================= */
+#finder .finder-item p {
+  @apply text-xs text-center w-24 truncate;
 
-      /* 📱 smaller icons */
-      @apply max-sm:gap-1;
-
-      img {
-        @apply object-contain object-center size-16 relative group-hover:scale-105;
-
-        @apply max-sm:size-12;
-      }
-
-      p {
-        @apply text-sm text-center font-medium w-40;
-
-        @apply max-sm:text-xs max-sm:w-24;
-      }
-    }
-  }
+  /* 📱 compact */
+  @apply max-sm:text-[10px] max-sm:w-20;
 }
 
 /* ================= TXT FILE ================= */

@@ -4,34 +4,34 @@ import useWindowStore from '#store/window'
 import React from 'react'
 
 const Image = () => {
-  const {windows} = useWindowStore();
-  const data = windows.imgfile?.data;
-  
-  if(!data) return null;
-  
-  const {name,imageUrl} =data;
+  const { windows } = useWindowStore();
+
+  // ✅ FIX: access file properly
+  const file = windows.imgfile?.data?.file;
+
+  if (!file) return null;
 
   return (
     <>
       <div id='window-header'>
         <WindowControls target="imgfile" />
-        <h2>{name}</h2>
+        <h2>{file.name}</h2>
       </div>
 
       <div className='p-5 bg-white'>
-        {imageUrl ?(
+        {file.imageUrl && (
           <div className='w-full'>
             <img 
-              src={imageUrl}
-              alt={name}
+              src={file.imageUrl}
+              alt={file.name}
               className='w-full h-auto max-h-[70vh] object-contain rounded' 
             />
           </div>
-        ):null}
+        )}
       </div>
     </>
   )
 }
 
-const ImageWindow = WindowWrapper(Image,"imgfile")
+const ImageWindow = WindowWrapper(Image, "imgfile")
 export default ImageWindow;
