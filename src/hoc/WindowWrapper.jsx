@@ -79,8 +79,8 @@ const WindowWrapper = (Component, windowKey) => {
 
       if (isMaximized) {
         gsap.to(el, {
-          width: "95vw",
-          height: "95vh",
+          width: "65vw",
+          height: "87vh",
           duration: 0.3,
         });
       } else {

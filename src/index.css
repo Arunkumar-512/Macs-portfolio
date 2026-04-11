@@ -7,7 +7,7 @@ body {
   width: 100dvw;
   overflow: hidden;
   height: 100dvh;
-  background-image: url("/images/wallpaper7.jpg");
+  background-image: url("/images/wallpaper03.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -186,7 +186,7 @@ nav time {
 
 /* 🔥 DOCK CONTAINER */
 #docs .docs-container {
-  @apply bg-white/10 backdrop-blur-2xl 
+  @apply bg-white/20 backdrop-blur-2xl 
   rounded-2xl px-2 py-1.5 
   flex items-end gap-2 
   border border-white/10 shadow-xl;
@@ -407,7 +407,7 @@ nav time {
 
 /* ITEMS */
 #terminal .items {
-  @apply flex flex-wrap gap-1 text-gray-200 leading-snug;
+  @apply flex flex-wrap gap-1 text-gray-700 leading-snug;
 }
 
 /* FOOTER */
