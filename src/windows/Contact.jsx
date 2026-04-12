@@ -17,7 +17,7 @@ const Contact = () => {
         {/* PROFILE */}
         <div className='profile'>
           <img 
-            src='/images/bunty.png' 
+            src='/images/bunty2.jpeg' 
             alt='Arun' 
             className='avatar'
           />

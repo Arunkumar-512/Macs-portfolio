@@ -5,6 +5,11 @@ const navLinks = [
     type: "finder",
   },
   {
+    id: 2,
+    name: "Archive", // 🔥 NEW (important)
+    type: "archive",
+  },
+  {
     id: 3,
     name: "Contact",
     type: "contact",
@@ -14,7 +19,6 @@ const navLinks = [
     name: "Resume",
     type: "resume",
   },
-
 ];
 
 const navIcons = [
@@ -68,10 +72,10 @@ const docsApps = [
     canOpen: true,
   },
   {
-    id: "trash",
+    id: "archive",
     name: "Archive", // was "Trash"
-    icon: "trash.png",
-    canOpen: false,
+    icon: "trash.png", //we can change the icon later
+    canOpen: true,
   },
 ];
 
@@ -907,6 +911,7 @@ const WINDOW_CONFIG = {
   terminal: createWindow(),
   txtfile: createWindow(),
   imgfile: createWindow(),
+  archive: createWindow(),
 };
 
 export { INITIAL_Z_INDEX, WINDOW_CONFIG };

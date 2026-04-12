@@ -100,59 +100,47 @@ const Finder = () => {
       draggables.forEach((d) => d.kill())
     }
   }, [activeLocation])
+const openItem = (item) => {
+  if (!item) return;
 
- const openItem = (item) => {
-  if (!item) return
-
-  // 📁 Folder → navigate inside Finder
+  // 📁 Folder
   if (item.kind === "folder") {
-    setActiveLocation(item)
-    return
+    setActiveLocation(item);
+    return;
   }
 
-  // 🌐 External links (GitHub, websites)
+  // 🌐 External link
   if ((item.fileType === "url" || item.fileType === "fig") && item.href) {
-    window.open(item.href, "_blank")
-    return
+    window.open(item.href, "_blank");
+    return;
   }
 
-  // 📄 Resume PDF
+  // 📄 PDF
   if (item.fileType === "pdf") {
-    openWindow("resume", { file: item })
-    return
+    openWindow("resume");
+    return;
   }
 
-  // 🖼 Image (IMPORTANT: use imageUrl)
+  // 🖼 IMAGE ✅ FIXED
   if (item.fileType === "img") {
-    openWindow("imgfile", {
-      file: {
-        ...item,
-        src: item.imageUrl, // 🔥 FIX
-      },
-    })
-    return
+    openWindow("imgfile", item);
+    return;
   }
 
-  // 📝 Text file
+  // 📝 TEXT ✅ FIXED
   if (item.fileType === "txt") {
-    openWindow("txtfile", {
-      file: {
-        ...item,
-        content: item.description, // 🔥 FIX
-      },
-    })
-    return
+    openWindow("txtfile", item);
+    return;
   }
 
-  // 🌍 Website / Project preview
+  // 🌍 WEB
   if (item.fileType === "web") {
-    openWindow("safari", { file: item })
-    return
+    openWindow("safari", item);
+    return;
   }
 
-  console.warn("❌ Unknown file type:", item)
-}
-
+  console.warn("❌ Unknown file type:", item);
+};
   // 🔥 SIDEBAR
   const renderList = (name, items) => (
     <div className="space-y-2">

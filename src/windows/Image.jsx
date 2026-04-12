@@ -1,37 +1,46 @@
 import { WindowControls } from '#components';
 import WindowWrapper from '#hoc/WindowWrapper';
-import useWindowStore from '#store/window'
-import React from 'react'
+import useWindowStore from '#store/window';
 
 const Image = () => {
   const { windows } = useWindowStore();
 
-  // ✅ FIX: access file properly
-  const file = windows.imgfile?.data?.file;
+  const data = windows.imgfile?.data;
 
-  if (!file) return null;
+  if (!data) return null;
+
+  const {
+    name = "Image",
+    imageUrl,
+    image,
+    img
+  } = data;
+
+  const src = imageUrl || image || img;
 
   return (
     <>
-      <div id='window-header'>
+      <div id="window-header">
         <WindowControls target="imgfile" />
-        <h2>{file.name}</h2>
+        <h2>{name}</h2>
       </div>
 
-      <div className='p-5 bg-white'>
-        {file.imageUrl && (
-          <div className='w-full'>
-            <img 
-              src={file.imageUrl}
-              alt={file.name}
-              className='w-full h-auto max-h-[70vh] object-contain rounded' 
-            />
-          </div>
+      <div className="p-4 bg-white flex items-center justify-center h-full">
+        {src ? (
+          <img
+            src={src}
+            alt={name}
+            className="max-w-full max-h-[80vh] object-contain"
+          />
+        ) : (
+          <p className="text-gray-400 text-center">
+            Image not found
+          </p>
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-const ImageWindow = WindowWrapper(Image, "imgfile")
+const ImageWindow = WindowWrapper(Image, "imgfile");
 export default ImageWindow;

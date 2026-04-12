@@ -11,6 +11,7 @@ import {
   Safari,
   Terminal,
   Text,
+  Archive
 } from "#windows";
 
 import useWindowStore from "#store/window";
@@ -35,6 +36,7 @@ const App = () => {
       {windows.imgfile.isOpen && <Image />}
       {windows.contact.isOpen && <Contact />}
       {windows.photos.isOpen && <Photos />}
+      {windows.archive.isOpen && <Archive />}
 
       <Home />
     </main>
