@@ -1,21 +1,21 @@
-import { WindowControls } from '#components'
-import { locations } from '#constants/index.js'
-import WindowWrapper from '#hoc/WindowWrapper'
-import useLoactionStore from '#store/location.js'
-import useWindowStore from '#store/window.js'
-import useFinderStore from '#store/finder'
-import clsx from 'clsx'
-import { Search } from 'lucide-react'
+import { WindowControls } from '#components';
+import { locations } from '#constants/index.js';
+import WindowWrapper from '#hoc/WindowWrapper';
+import useLoactionStore from '#store/location.js';
+import useWindowStore from '#store/window.js';
+import useFinderStore from '#store/finder';
+import clsx from 'clsx';
+import { Search } from 'lucide-react';
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import Draggable from 'gsap/Draggable'
+import { useEffect, useRef, useCallback } from 'react';
+import { gsap } from 'gsap';
+import Draggable from 'gsap/Draggable';
 
-gsap.registerPlugin(Draggable)
+gsap.registerPlugin(Draggable);
 
 const Finder = () => {
-  const { openWindow } = useWindowStore()
-  const { activeLocation, setActiveLocation } = useLoactionStore()
+  const { openWindow } = useWindowStore();
+  const { activeLocation, setActiveLocation } = useLoactionStore();
 
   const {
     positions,
@@ -23,226 +23,197 @@ const Finder = () => {
     selectedIds,
     select,
     clearSelection,
-  } = useFinderStore()
+  } = useFinderStore();
 
-  const containerRef = useRef(null)
+  const containerRef = useRef(null);
 
   // 🔥 GRID GENERATOR
-  const generateInitialPosition = (index) => {
-    const spacingX = 110
-    const spacingY = 110
-
-    const col = index % 4
-    const row = Math.floor(index / 4)
+  const generateInitialPosition = useCallback((index) => {
+    const spacingX = 110;
+    const spacingY = 110;
+    const col = index % 4;
+    const row = Math.floor(index / 4);
 
     return {
       x: col * spacingX + 20,
       y: row * spacingY + 20,
-    }
-  }
+    };
+  }, []);
+
+  // 🔥 FILE OPEN LOGIC
+  const openItem = useCallback((item) => {
+    if (!item) return;
+
+    const actionMap = {
+      folder: () => setActiveLocation(item),
+      pdf: () => openWindow("resume"),
+      img: () => openWindow("imgfile", item),
+      txt: () => openWindow("txtfile", item),
+      web: () => openWindow("safari", item),
+      url: () => window.open(item.href, "_blank"),
+      fig: () => window.open(item.href, "_blank"),
+    };
+
+    const action = actionMap[item.kind === "folder" ? "folder" : item.fileType];
+    if (action) action();
+    else console.warn("❌ Unknown file type:", item);
+  }, [setActiveLocation, openWindow]);
 
   // 🔥 GSAP DRAG SYSTEM
   useEffect(() => {
-    const elements = document.querySelectorAll(".finder-item")
+    // gsap.context handles cleanup automatically
+    let ctx = gsap.context(() => {
+      const elements = gsap.utils.toArray(".finder-item");
 
-    // ✅ sync GSAP with saved positions
-    elements.forEach((el, index) => {
-      const id = el.dataset.id
-      const saved = positions[id]
+      elements.forEach((el, index) => {
+        const id = el.dataset.id;
+        const saved = positions[id];
+        const initial = generateInitialPosition(index);
 
-      const initial = generateInitialPosition(index)
+        const x = saved?.x ?? initial.x;
+        const y = saved?.y ?? initial.y;
 
-      const x = saved?.x ?? initial.x
-      const y = saved?.y ?? initial.y
+        if (!saved) {
+          setPosition(id, { x, y });
+        }
 
-      // ✅ store initial only once (no infinite loop)
-      if (!saved) {
-        setPosition(id, { x, y })
-      }
+        gsap.set(el, { x, y });
+      });
 
-      gsap.set(el, { x, y })
-    })
+      Draggable.create(".finder-item", {
+        bounds: containerRef.current,
+        inertia: true, // Optional: smoother feel if you have InertiaPlugin
+        onPress() {
+          this.update();
+          this.target.style.zIndex = 1000;
+        },
+        onRelease() {
+          this.target.style.zIndex = "";
+        },
+        onDragEnd() {
+          const id = this.target.dataset.id;
+          const snap = 80;
+          const snappedX = Math.round(this.x / snap) * snap;
+          const snappedY = Math.round(this.y / snap) * snap;
 
-    const draggables = Draggable.create(".finder-item", {
-      bounds: containerRef.current,
+          gsap.to(this.target, {
+            x: snappedX,
+            y: snappedY,
+            duration: 0.2,
+            ease: "power2.out",
+          });
 
-      onPress() {
-        this.update()
-        this.target.style.zIndex = 1000
-      },
+          setPosition(id, { x: snappedX, y: snappedY });
+        },
+      });
+    }, containerRef);
 
-      onRelease() {
-        this.target.style.zIndex = ""
-      },
+    return () => ctx.revert(); // Kills all draggables and animations
+  }, [activeLocation, positions, setPosition, generateInitialPosition]);
 
-      onDragEnd() {
-        const id = this.target.dataset.id
-
-        const snap = 80
-        const snappedX = Math.round(this.x / snap) * snap
-        const snappedY = Math.round(this.y / snap) * snap
-
-        gsap.to(this.target, {
-          x: snappedX,
-          y: snappedY,
-          duration: 0.2,
-          ease: "power2.out",
-        })
-
-        setPosition(id, {
-          x: snappedX,
-          y: snappedY,
-        })
-      },
-    })
-
-    return () => {
-      draggables.forEach((d) => d.kill())
-    }
-  }, [activeLocation])
-const openItem = (item) => {
-  if (!item) return;
-
-  // 📁 Folder
-  if (item.kind === "folder") {
-    setActiveLocation(item);
-    return;
-  }
-
-  // 🌐 External link
-  if ((item.fileType === "url" || item.fileType === "fig") && item.href) {
-    window.open(item.href, "_blank");
-    return;
-  }
-
-  // 📄 PDF
-  if (item.fileType === "pdf") {
-    openWindow("resume");
-    return;
-  }
-
-  // 🖼 IMAGE ✅ FIXED
-  if (item.fileType === "img") {
-    openWindow("imgfile", item);
-    return;
-  }
-
-  // 📝 TEXT ✅ FIXED
-  if (item.fileType === "txt") {
-    openWindow("txtfile", item);
-    return;
-  }
-
-  // 🌍 WEB
-  if (item.fileType === "web") {
-    openWindow("safari", item);
-    return;
-  }
-
-  console.warn("❌ Unknown file type:", item);
-};
-  // 🔥 SIDEBAR
   const renderList = (name, items) => (
-    <div className="space-y-2">
-      <h3 className="text-[11px] font-semibold text-gray-400 uppercase px-2">
+    <div className="space-y-2 mb-6 last:mb-0">
+      <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-3">
         {name}
       </h3>
-
-      <ul className="flex flex-col gap-1 max-sm:flex-row max-sm:overflow-x-auto">
+      <ul className="flex flex-col gap-0.5 max-sm:flex-row max-sm:overflow-x-auto max-sm:px-2">
         {items?.filter(Boolean).map((item) => {
-          const isActive = item.id === activeLocation?.id
-
+          const isActive = item.id === activeLocation?.id;
           return (
             <li
               key={item.id}
               onClick={() => setActiveLocation(item)}
               className={clsx(
-                "flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-all duration-200 whitespace-nowrap",
+                "flex items-center gap-2 px-3 py-1.5 rounded-md cursor-default select-none transition-colors whitespace-nowrap",
                 isActive
                   ? "bg-blue-500 text-white"
-                  : "text-gray-700 hover:bg-gray-200"
+                  : "text-gray-600 hover:bg-gray-200/60 active:bg-gray-300/60"
               )}
             >
-              <img src={item.icon} className="w-4 h-4" alt={item.name} />
-              <p className="text-sm font-medium truncate">{item.name}</p>
+              <img src={item.icon} className="w-4 h-4" alt="" />
+              <p className="text-[13px] font-medium truncate">{item.name}</p>
             </li>
-          )
+          );
         })}
       </ul>
     </div>
-  )
+  );
 
   return (
     <>
-      {/* HEADER */}
-      <div id="window-header">
+      <div id="window-header" className="flex items-center px-4 py-1 gap-4">
         <WindowControls target="finder" />
-        <Search className="icon" />
+        <div className="flex-1 flex justify-center">
+            <div className="flex items-center bg-gray-100/80 px-2 py-0.5 rounded text-gray-400 w-full max-w-xs border border-gray-200/50">
+               <Search size={12} className="mr-2" />
+               <span className="text-[11px]">Search</span>
+            </div>
+        </div>
       </div>
 
-      {/* BODY */}
-      <div className="bg-white flex flex-col sm:flex-row h-full">
-
+      <div className="bg-white flex flex-col sm:flex-row h-full overflow-hidden">
         {/* SIDEBAR */}
-        <div className="sidebar">
+        <div className="sidebar w-48 max-sm:w-full bg-gray-50/50 border-r border-gray-200/50 p-2 overflow-y-auto">
           {renderList("Favorites", Object.values(locations))}
           {renderList("Work", locations.work?.children || [])}
         </div>
 
-        {/* CONTENT */}
+        {/* CONTENT AREA */}
         <div
           ref={containerRef}
-          className="content relative w-full h-full overflow-hidden 
-             max-sm:flex-1 max-sm:overflow-y-auto max-sm:p-3"
+          className="content relative flex-1 overflow-hidden max-sm:overflow-y-auto bg-white"
           onClick={() => clearSelection()}
         >
-          {(activeLocation?.children || []).length > 0 ? (
+          {activeLocation?.children?.length > 0 ? (
             activeLocation.children.map((item) => {
-              const saved = positions[item.id]
-
-              const x = saved?.x ?? 0
-              const y = saved?.y ?? 0
-
-              const isSelected = selectedIds.includes(item.id)
+              const saved = positions[item.id];
+              const x = saved?.x ?? 0;
+              const y = saved?.y ?? 0;
+              const isSelected = selectedIds.includes(item.id);
 
               return (
                 <div
                   key={item.id}
                   data-id={item.id}
                   className={clsx(
-                    "finder-item absolute flex flex-col items-center cursor-pointer select-none p-1 rounded",
-                    isSelected && "bg-blue-500/20"
+                    "finder-item absolute flex flex-col items-center cursor-default select-none p-2 rounded-lg transition-shadow",
+                    isSelected ? "bg-blue-500/20 shadow-inner" : "hover:bg-gray-100/40"
                   )}
                   style={{
-                    transform: `translate3d(${x}px, ${y}px, 0)`
+                    transform: `translate3d(${x}px, ${y}px, 0)`,
+                    width: '100px'
                   }}
                   onClick={(e) => {
-                    e.stopPropagation()
-                    select(item.id, e.metaKey || e.ctrlKey)
+                    e.stopPropagation();
+                    select(item.id, e.metaKey || e.ctrlKey);
                   }}
                   onDoubleClick={() => openItem(item)}
                 >
                   <img
                     src={item.icon}
                     alt={item.name}
-                    className="w-14 h-14 object-contain transition-transform duration-200"
+                    className="w-10 h-10 object-contain"
                   />
-                  <p className="text-xs text-center mt-1 w-24 truncate">
+                  <p className={clsx(
+                    "text-[11px] text-center mt-1 w-full truncate px-1 rounded",
+                    isSelected ? "bg-blue-600 text-white" : "text-gray-800"
+                  )}>
                     {item.name}
                   </p>
                 </div>
-              )
+              );
             })
           ) : (
-            <div className="flex items-center justify-center w-full h-full text-gray-400 text-sm">
-              No items here
+            <div className="flex flex-col items-center justify-center w-full h-full text-gray-400">
+              <Search size={48} className="opacity-10 mb-2" />
+              <p className="text-xs italic">Empty Folder</p>
             </div>
           )}
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-const FinderWindow = WindowWrapper(Finder, "finder")
-export default FinderWindow
+const FinderWindow = WindowWrapper(Finder, "finder");
+export default FinderWindow;

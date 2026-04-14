@@ -79,7 +79,7 @@ const WindowWrapper = (Component, windowKey) => {
 
       if (isMaximized) {
         gsap.to(el, {
-          width: "65vw",
+          width: "83vw",
           height: "87vh",
           duration: 0.3,
         });
@@ -130,7 +130,7 @@ const WindowWrapper = (Component, windowKey) => {
         id={windowKey}
         ref={ref}
         style={{ zIndex }}
-        className="absolute bg-white rounded-xl shadow-xl overflow-hidden"
+        className="absolute bg-white rounded-xl shadow-xl "
       >
         <Component
           {...props}

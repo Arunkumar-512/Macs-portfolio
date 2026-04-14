@@ -6,7 +6,7 @@ const Text = () => {
   const { windows } = useWindowStore();
 
   // ✅ FIX: correct access
-  const file = windows.txtfile?.data?.file;
+  const file = windows.txtfile?.data;
 
   if (!file) return null;
 

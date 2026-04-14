@@ -80,7 +80,7 @@ const useWindowStore = create(
 
         // 🔄 toggle
         win.isMaximized = !win.isMaximized;
-
+        
         // 🔥 ensure not minimized
         win.isMinimized = false;
 

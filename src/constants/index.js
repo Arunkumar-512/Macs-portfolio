@@ -4,18 +4,14 @@ const navLinks = [
     name: "Projects",
     type: "finder",
   },
+  
   {
     id: 2,
-    name: "Archive", // 🔥 NEW (important)
-    type: "archive",
-  },
-  {
-    id: 3,
     name: "Contact",
     type: "contact",
   },
   {
-    id: 4,
+    id: 3,
     name: "Resume",
     type: "resume",
   },
@@ -806,7 +802,6 @@ const ABOUT_LOCATION = {
       fileType: "txt",
       position: "top-60 left-5",
       subtitle: "Meet the Developer Behind the Code",
-      image: "/images/bunty.png",
       description: `
         Hi, I’m Arun 👋 — a passionate web developer focused on building modern, scalable, and high-performing web applications.
 

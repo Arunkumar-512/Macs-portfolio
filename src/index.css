@@ -5,7 +5,8 @@
 html,
 body {
   width: 100dvw;
-  overflow: hidden;
+  /* ✅ FIX */
+  overflow: auto;
   height: 100dvh;
   background-image: url("/images/wallpaper03.jpg");
   background-size: cover;
@@ -244,103 +245,102 @@ nav time {
 
   /* 📱 mobile spacing */
   @apply max-sm:px-3 max-sm:py-2;
-}
-/* 🔥 SAFARI WINDOW */
+
+}/* 🔥 SAFARI WINDOW CONTAINER */
 #safari {
-  @apply w-4xl absolute top-40 left-2/12 
-  bg-white shadow-2xl drop-shadow-2xl 
-  rounded-xl overflow-hidden;
+  /* 🖥️ DESKTOP: Centered & Spacious */
+  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+         w-full max-w-5xl h-[85vh]
+         bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col;
 
-  /* 📱 MOBILE FULL SCREEN */
-  @apply max-sm:w-full max-sm:h-[90vh] 
-  max-sm:top-10 max-sm:left-0 
-  max-sm:rounded-none 
-  max-sm:flex max-sm:flex-col;
+  /* 📱 MOBILE: Full Screen / App-like */
+  @apply max-sm:top-0 max-sm:left-0 max-sm:translate-x-0 max-sm:translate-y-0 
+         max-sm:w-full max-sm:h-full max-sm:rounded-none;
 
-  /* glass feel */
-  @apply max-sm:bg-white/10 max-sm:backdrop-blur-2xl;
+  /* Glass effect for mobile header/background */
+  @apply max-sm:bg-white/80 max-sm:backdrop-blur-xl;
 }
 
-/* 🔥 HEADER MOBILE COMPACT */
+/* 🔥 HEADER / ADDRESS BAR AREA */
 #safari #window-header {
-  @apply max-sm:flex max-sm:items-center max-sm:justify-between;
+  @apply flex items-center justify-between px-4 py-2 bg-gray-50 border-b border-gray-200;
+  
+  /* 📱 MOBILE FIXED HEADER */
+  @apply max-sm:fixed max-sm:top-0 max-sm:w-full max-sm:z-20 max-sm:h-14;
 }
 
-/* 🔥 SEARCH BAR */
+/* 🔥 SEARCH BAR (The "URL" input) */
 #safari .search {
-  @apply flex items-center gap-3 w-2/3 
-  bg-white border border-gray-300 
-  rounded-lg px-3 py-2;
+  @apply flex items-center gap-2 w-full max-w-md 
+         bg-gray-100 border border-transparent
+         rounded-lg px-4 py-1.5 transition-all
+         focus-within:bg-white focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100;
 
-  /* 📱 MOBILE */
-  @apply max-sm:w-full max-sm:gap-2 max-sm:px-2 max-sm:py-1;
+  /* 📱 MOBILE SEARCH */
+  @apply max-sm:max-w-[180px] max-sm:px-2 max-sm:py-1 max-sm:gap-1;
 
   input {
-    @apply placeholder:text-gray-400 text-sm;
-
-    @apply max-sm:text-xs;
+    @apply w-full bg-transparent outline-none text-sm text-center text-gray-600;
+    @apply max-sm:text-[10px];
   }
 }
 
-/* 🔥 BLOG SECTION */
+/* 🔥 BLOG SECTION (Scrollable Body) */
 #safari .blog {
-  @apply bg-white p-10 max-w-3xl mx-auto;
+  @apply flex-1 overflow-y-auto bg-white p-10;
 
-  /* 📱 MOBILE SCROLL FIX */
-  @apply max-sm:flex-1 max-sm:overflow-y-auto 
-  max-sm:bg-transparent max-sm:p-3 max-sm:max-w-full;
+  /* 📱 MOBILE CONTENT PADDING */
+  /* Added pt-16 to account for the fixed header on mobile */
+  @apply max-sm:p-5 max-sm:pt-20 max-sm:bg-transparent;
 
   -webkit-overflow-scrolling: touch;
+
+  h2 {
+    @apply text-3xl font-extrabold text-gray-900 mb-12 tracking-tight;
+    @apply max-sm:text-xl max-sm:mb-6;
+  }
 }
 
-/* 🔥 TITLE */
-#safari .blog h2 {
-  @apply text-xl font-bold text-pink-600 mb-10;
-
-  @apply max-sm:text-base max-sm:mb-4;
-}
-
-/* 🔥 BLOG POST */
+/* 🔥 BLOG POST CARD */
 #safari .blog .blog-post {
-  @apply grid grid-cols-12 gap-5;
+  /* 🖥️ DESKTOP: 2-Column Side-by-Side */
+  @apply grid grid-cols-12 gap-8 mb-12 items-center;
 
-  /* 📱 STACK */
-  @apply max-sm:grid-cols-1 max-sm:gap-3;
+  /* 📱 MOBILE: Single Column Stack */
+  @apply max-sm:flex max-sm:flex-col max-sm:gap-4 max-sm:mb-10;
+
+  /* IMAGE WRAPPER */
+  .post-image-container {
+    @apply col-span-4 overflow-hidden rounded-xl shadow-sm;
+    
+    img {
+      @apply w-full h-48 object-cover transition-transform duration-500 hover:scale-105;
+      @apply max-sm:h-40;
+    }
+  }
+
+  /* CONTENT AREA */
+  .content {
+    @apply col-span-8 flex flex-col gap-3;
+    @apply max-sm:gap-2;
+
+    p {
+      @apply text-xs font-bold text-blue-500 uppercase tracking-widest;
+      @apply max-sm:text-[10px];
+    }
+
+    h3 {
+      @apply text-2xl font-bold text-gray-800 leading-snug hover:text-blue-600 cursor-pointer;
+      @apply max-sm:text-lg;
+    }
+
+    a {
+      @apply text-sm font-medium text-gray-500 flex items-center gap-1 hover:text-black transition-colors;
+      @apply max-sm:text-xs;
+    }
+  }
 }
-
-/* 🔥 IMAGE */
-#safari .blog .blog-post img {
-  @apply w-full h-40 rounded-md object-cover;
-
-  @apply max-sm:h-32;
-}
-
-/* 🔥 CONTENT */
-#safari .blog .blog-post .content {
-  @apply col-span-10 space-y-3;
-
-  @apply max-sm:col-span-1 max-sm:space-y-2;
-}
-
-/* 🔥 TEXT */
-#safari .blog .blog-post .content p {
-  @apply text-xs text-gray-500;
-
-  @apply max-sm:text-[10px];
-}
-
-#safari .blog .blog-post .content h3 {
-  @apply font-semibold text-base text-gray-800;
-
-  @apply max-sm:text-sm;
-}
-
-#safari .blog .blog-post .content a {
-  @apply text-blue-600 text-xs flex items-center gap-2;
-
-  @apply max-sm:text-[10px];
-}
-
+/* terminal */
  #terminal {
   @apply w-xl absolute top-32 left-1/12 
   bg-black text-green-400 shadow-2xl rounded-xl overflow-hidden;
@@ -599,83 +599,82 @@ nav time {
       @apply max-sm:text-xs;
     }
   }
-}/* ================= FINDER ================= */
-#finder {
-  @apply absolute w-4xl left-32 top-16
-  rounded-xl overflow-hidden shadow-2xl;
+}
 
-  /* 📱 MOBILE WINDOW */
-  @apply max-sm:w-[95%] max-sm:left-1/2 max-sm:-translate-x-1/2
-  max-sm:top-14 max-sm:h-[85vh] max-sm:flex max-sm:flex-col;
+/* ================= FINDER WINDOW ================= */
+#finder {
+  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+         w-full max-w-4xl h-[70vh] bg-white shadow-2xl rounded-xl flex flex-col;
+  
+  /* 📱 MOBILE VIEW */
+  @apply max-sm:top-0 max-sm:left-0 max-sm:translate-x-0 max-sm:translate-y-0 
+         max-sm:h-full max-sm:rounded-none;
 }
 
 /* ================= SIDEBAR ================= */
 #finder .sidebar {
-  @apply w-52 bg-gray-100/80 backdrop-blur-xl
-  border-r border-gray-200
-  flex flex-col p-4 gap-4;
+  @apply w-48 bg-gray-50/80 border-r border-gray-200 p-4 shrink-0;
 
-  /* 📱 TOP BAR */
-  @apply max-sm:w-full max-sm:flex-row max-sm:overflow-x-auto
-  max-sm:border-r-0 max-sm:border-b max-sm:gap-2 max-sm:p-2;
+  /* 📱 MOBILE TOP NAV */
+  @apply max-sm:w-full max-sm:h-auto max-sm:flex-row max-sm:p-2 
+         max-sm:border-r-0 max-sm:border-b max-sm:overflow-x-auto;
+}
+
+#finder .sidebar h3 {
+  @apply text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3;
 }
 
 #finder .sidebar ul {
   @apply flex flex-col gap-1;
-
-  /* 📱 horizontal */
   @apply max-sm:flex-row max-sm:gap-2;
 }
 
 #finder .sidebar li {
-  @apply flex items-center gap-2 px-3 py-2 rounded-md
-  cursor-pointer transition-all duration-200 whitespace-nowrap;
-
-  @apply hover:bg-gray-200;
+  @apply flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer 
+         transition-all text-sm text-gray-700 font-medium;
+  @apply hover:bg-gray-200/50;
+  
+  /* 📱 MOBILE PILLS */
+  @apply max-sm:bg-gray-100 max-sm:rounded-full max-sm:px-4;
 }
 
 #finder .sidebar li.active {
-  @apply bg-blue-500 text-white;
+  @apply bg-blue-500 text-white shadow-sm;
 }
 
-/* ================= CONTENT ================= */
+/* ================= CONTENT AREA ================= */
 #finder .content {
-  @apply relative w-full h-full bg-white flex-1;
+  @apply flex-1 relative bg-white;
+}
 
-  /* 📱 MOBILE GRID */
-  @apply max-sm:grid max-sm:grid-cols-3 max-sm:gap-4 
-  max-sm:justify-items-center max-sm:p-3 
-  max-sm:overflow-y-auto;
+/* Desktop Drag Area */
+.desktop-canvas {
+  @apply w-full h-full overflow-hidden;
+}
+
+/* Mobile Grid Area */
+.mobile-grid {
+  @apply grid grid-cols-3 gap-y-8 gap-x-2 p-6 overflow-y-auto h-full items-start;
 }
 
 /* ================= FILE ITEMS ================= */
 #finder .finder-item {
-  @apply absolute flex flex-col items-center gap-2
-  cursor-pointer select-none;
+  @apply flex flex-col items-center gap-1 p-2 rounded-md border border-transparent;
+  @apply hover:bg-blue-50/50;
 }
 
-/* 📱 MOBILE FIX (CRITICAL) */
-@media (max-width: 640px) {
-  #finder .finder-item {
-    position: static !important;
-    transform: none !important;
-  }
+#finder .finder-item.selected {
+  @apply bg-blue-100/50 border-blue-200/50;
 }
 
-/* ================= ICON ================= */
 #finder .finder-item img {
-  @apply w-14 h-14 object-contain transition-transform duration-200;
-
-  /* 📱 smaller */
-  @apply max-sm:w-12 max-sm:h-12;
+  @apply w-12 h-12 object-contain select-none;
+  @apply max-sm:w-10 max-sm:h-10;
 }
 
-/* ================= LABEL ================= */
 #finder .finder-item p {
-  @apply text-xs text-center w-24 truncate;
-
-  /* 📱 compact */
-  @apply max-sm:text-[10px] max-sm:w-20;
+  @apply text-[11px] text-center w-24 leading-tight text-gray-800 break-words;
+  @apply max-sm:w-full max-sm:px-1;
 }
 
 /* ================= TXT FILE ================= */
@@ -696,126 +695,189 @@ nav time {
 
 /* ================= IMG FILE ================= */
 #imgfile {
-  @apply w-xl absolute top-40 left-2/12 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
+  @apply w-xl absolute top-40 left-2/12 
+  bg-white shadow-2xl drop-shadow-2xl 
+  rounded-xl overflow-hidden flex flex-col;
 
   /* 📱 MOBILE */
   @apply max-sm:w-full max-sm:left-0 max-sm:top-14 
-  max-sm:h-[85vh] max-sm:rounded-none 
+  max-sm:h-[90vh] max-sm:rounded-none 
   max-sm:bg-white/10 max-sm:backdrop-blur-2xl;
-
-  #window-header {
-    p {
-      @apply font-bold text-[#5f6266];
-
-      @apply max-sm:text-xs;
-    }
-  }
-
-  .preview {
-    @apply p-2 bg-gray-200 max-h-[70vh];
-
-    /* 📱 scrollable preview */
-    @apply max-sm:max-h-full max-sm:h-full max-sm:bg-transparent max-sm:overflow-auto;
-
-    img {
-      @apply w-full h-fit object-contain object-center;
-    }
-  }
 }
-  #home {
-  @apply relative z-0;
 
-  /* ❌ remove hiding */
-  @apply max-sm:block max-sm:w-full max-sm:h-screen max-sm:px-4 max-sm:py-6;
+/* HEADER TEXT */
+#imgfile #window-header h2 {
+  @apply font-semibold text-[#5f6266] text-sm text-center flex-1;
+
+  /* 📱 MOBILE */
+  @apply max-sm:text-xs truncate;
+}
+
+/* IMAGE CONTAINER */
+#imgfile > div:last-child {
+  @apply p-4 bg-white flex items-center justify-center flex-1;
+
+  /* 📱 MOBILE CLEAN VIEW */
+  @apply max-sm:p-3 max-sm:bg-transparent max-sm:overflow-auto;
+}
+
+/* IMAGE */
+#imgfile img {
+  @apply max-w-full max-h-[75vh] object-contain;
+
+  /* 📱 MOBILE */
+  @apply max-sm:max-h-full max-sm:rounded-lg;
+}
+
+ /* ================= HOME CANVAS ================= */
+#home {
+  @apply relative w-full h-full overflow-hidden;
+
+  /* 📱 MOBILE: Ensure full height and proper padding */
+  @apply max-sm:h-[calc(100vh-64px)] max-sm:overflow-y-auto max-sm:px-4 max-sm:py-8;
 
   ul {
-    /* 📱 MOBILE GRID LAYOUT */
-    @apply max-sm:grid max-sm:grid-cols-3 max-sm:gap-y-6 max-sm:gap-x-4 max-sm:justify-items-center;
+    @apply relative w-full h-full;
+
+    /* 📱 MOBILE GRID SYSTEM */
+    @apply max-sm:grid max-sm:grid-cols-3 max-sm:gap-y-8 max-sm:gap-x-4 
+           max-sm:justify-items-center max-sm:content-start;
 
     li {
-      @apply absolute z-0 select-none flex items-center flex-col;
-
-      /* 📱 reset absolute positioning */
-      @apply max-sm:static;
+      /* 🖥️ DESKTOP: Absolute for GSAP Draggable */
+      @apply absolute flex flex-col items-center gap-1 cursor-pointer select-none z-10;
+      
+      /* 📱 MOBILE: Reset to Grid Flow */
+      @apply max-sm:static max-sm:w-full;
 
       img {
-        @apply group-hover:bg-gray-950/10 p-1 rounded-md;
+        @apply w-14 h-14 object-contain transition-transform duration-200 p-1 rounded-lg;
+        @apply group-hover:bg-white/10 group-active:scale-95;
 
-        /* 📱 better touch size */
-        @apply max-sm:size-14 max-sm:p-2;
+        /* 📱 Smaller icons for tight mobile grids */
+        @apply max-sm:w-12 max-sm:h-12;
       }
 
       p {
-        @apply text-sm text-white text-center px-1 rounded-md group-hover:bg-blue-500 transition-colors max-w-40;
+        @apply text-xs text-white text-center px-1.5 py-0.5 rounded-sm 
+               transition-colors duration-200 max-w-[100px] line-clamp-2;
+        
+        /* Glass effect for text visibility on dark wallpapers */
+        @apply bg-black/20 backdrop-blur-sm group-hover:bg-blue-600;
 
-        /* 📱 readable text */
-        @apply max-sm:text-xs max-sm:max-w-[80px];
+        /* 📱 Mobile text adjustments */
+        @apply max-sm:text-[10px] max-sm:max-w-[75px] max-sm:bg-transparent;
       }
     }
   }
 }
+
+/* Specific fix for GSAP: Ensure Draggable helper doesn't cause overflow */
+.gsap-draggable-helper {
+  @apply z-[1000];
 }
-/* ================= ARCHIVE ================= */
+}
+
+/* ================= ARCHIVE WINDOW ================= */
 #archive {
-  @apply w-3xl absolute top-32 left-1/4 
-  bg-white shadow-2xl rounded-xl overflow-hidden;
+  /* 🖥️ DESKTOP: Centered & Floating */
+  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+         w-full max-w-3xl h-[80vh]
+         bg-white shadow-2xl rounded-xl overflow-hidden flex flex-col;
 
-  /* 📱 MOBILE */
-  @apply max-sm:w-full max-sm:h-[85vh] 
-  max-sm:top-14 max-sm:left-0 
-  max-sm:rounded-none max-sm:bg-white/10 max-sm:backdrop-blur-xl;
+  /* 📱 MOBILE: Full Screen View */
+  @apply max-sm:top-0 max-sm:left-0 max-sm:translate-x-0 max-sm:translate-y-0 
+         max-sm:w-full max-sm:h-full max-sm:rounded-none;
+  
+  /* Glass effect for mobile background */
+  @apply max-sm:bg-white/90 max-sm:backdrop-blur-xl;
 }
 
-/* CONTENT */
+/* ================= HEADER ================= */
+#archive #window-header {
+  @apply flex items-center px-4 py-2 bg-gray-50 border-b border-gray-100 shrink-0;
+  
+  /* Keep header at the top during mobile scroll */
+  @apply max-sm:fixed max-sm:top-0 max-sm:w-full max-sm:z-30 max-sm:h-12;
+}
+
+/* ================= SCROLLABLE CONTENT ================= */
 #archive .archive-container {
-  @apply p-8 overflow-y-auto h-full;
+  /* This is the key for the scroll functionality */
+  @apply flex-1 overflow-y-auto p-10;
+  
+  /* Smooth scrolling for touch devices */
+  -webkit-overflow-scrolling: touch;
 
-  @apply max-sm:p-4;
+  /* 📱 MOBILE: Space for the fixed header */
+  @apply max-sm:p-6 max-sm:pt-16;
 }
 
-/* TITLE */
 #archive .archive-title {
-  @apply text-xl font-bold mb-8 text-gray-800;
-
-  @apply max-sm:text-lg max-sm:mb-5;
+  @apply text-3xl font-bold mb-10 text-gray-900 tracking-tight;
+  @apply max-sm:text-xl max-sm:mb-6;
 }
 
-/* TIMELINE */
+/* ================= THE TIMELINE ================= */
 #archive .timeline {
-  @apply relative border-l-2 border-gray-300 pl-6 space-y-8;
+  @apply relative pl-10;
+  @apply max-sm:pl-8;
 }
 
-/* ITEM */
+/* The Vertical Path */
+#archive .timeline::before {
+  content: "";
+  @apply absolute left-[15px] top-2 bottom-0 w-[2px] 
+         bg-gradient-to-b from-blue-500 via-blue-200 to-transparent;
+  @apply max-sm:left-[11px];
+}
+
 #archive .timeline-item {
-  @apply relative;
+  @apply relative mb-10 last:mb-0;
+  @apply max-sm:mb-8;
 }
 
-/* DOT */
+/* ================= THE DOT ================= */
 #archive .timeline-dot {
-  @apply absolute -left-[10px] top-1 
-  w-4 h-4 bg-blue-500 rounded-full;
+  /* Perfectly centered on the line */
+  @apply absolute left-[-32px] top-1.5 z-10
+         w-8 h-8 bg-white border-2 border-blue-500 
+         rounded-full shadow-sm flex items-center justify-center;
+  
+  @apply max-sm:w-6 max-sm:h-6 max-sm:left-[-25px] max-sm:top-1;
 }
 
-/* CONTENT */
-#archive .timeline-content {
-  @apply space-y-1;
+/* ================= THE CARD ================= */
+#archive .timeline-card {
+  @apply bg-gray-50 border border-gray-100 rounded-xl p-5 
+         flex flex-col gap-3 transition-all duration-300;
+
+  /* Subtle lift effect on desktop */
+  @apply hover:bg-white hover:shadow-xl hover:border-blue-100 hover:-translate-y-1;
+
+  @apply max-sm:p-4 max-sm:gap-2 max-sm:bg-white/50;
+}
+
+/* Metadata (Year & Category) */
+#archive .timeline-meta {
+  @apply flex items-center gap-3;
 }
 
 #archive .year {
-  @apply text-xs text-gray-400;
+  @apply text-xs font-bold text-gray-400 uppercase tracking-tighter;
+}
+
+#archive .badge {
+  @apply text-[9px] px-2 py-0.5 rounded-md 
+         bg-blue-100 text-blue-700 font-bold uppercase tracking-wider;
 }
 
 #archive h4 {
-  @apply font-semibold text-base text-gray-800;
-
-  @apply max-sm:text-sm;
+  @apply font-bold text-lg text-gray-800 leading-tight;
+  @apply max-sm:text-base;
 }
 
 #archive .desc {
-  @apply text-sm text-gray-600;
-
+  @apply text-sm text-gray-600 leading-relaxed;
   @apply max-sm:text-xs;
 }
-
-
-
