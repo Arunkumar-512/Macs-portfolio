@@ -584,58 +584,85 @@ nav time {
 }
 
   /* ================= RESUME ================= */
+
 #resume {
+
   @apply w-fit h-fit absolute top-16 left-7/12 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
 
+
+
   /* 📱 MOBILE */
+
   @apply max-sm:w-[90%] max-sm:left-1/2 max-sm:-translate-x-1/2 
+
   max-sm:top-14 max-sm:h-[80vh] 
+
   max-sm:bg-white/10 max-sm:backdrop-blur-2xl;
 
+
+
   #window-header {
+
     h2 {
+
       @apply font-bold text-sm text-center flex-1;
 
-      @apply max-sm:text-xs;
-    }
-  }
-}
 
+
+      @apply max-sm:text-xs;
+
+    }
+
+  }
+
+}resume css if required make changes to thecss
 /* ================= FINDER WINDOW ================= */
 #finder {
+  /* Default Desktop: Center using fixed + translate */
   @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-         w-full max-w-4xl h-[70vh] bg-white shadow-2xl rounded-xl flex flex-col;
+         w-full max-w-4xl h-[70vh] bg-white shadow-2xl rounded-xl flex flex-col overflow-hidden;
   
-  /* 📱 MOBILE VIEW */
+  /* 📱 MOBILE VIEW: Reset translate so it doesn't fly off-screen */
   @apply max-sm:top-0 max-sm:left-0 max-sm:translate-x-0 max-sm:translate-y-0 
-         max-sm:h-full max-sm:rounded-none;
+         max-sm:w-screen max-sm:h-screen max-sm:max-h-none max-sm:rounded-none max-sm:z-[100];
 }
 
 /* ================= SIDEBAR ================= */
 #finder .sidebar {
-  @apply w-48 bg-gray-50/80 border-r border-gray-200 p-4 shrink-0;
+  /* Desktop Defaults */
+  @apply w-48 bg-gray-50/80 border-r border-gray-200 p-4 shrink-0 overflow-y-auto;
 
-  /* 📱 MOBILE TOP NAV */
-  @apply max-sm:w-full max-sm:h-auto max-sm:flex-row max-sm:p-2 
-         max-sm:border-r-0 max-sm:border-b max-sm:overflow-x-auto;
+  /* 📱 MOBILE TOP NAV: Fixed height, horizontal scroll */
+  @apply max-sm:w-full max-sm:h-14 max-sm:flex max-sm:flex-row max-sm:p-2 
+         max-sm:border-r-0 max-sm:border-b max-sm:overflow-x-auto 
+         max-sm:overflow-y-hidden max-sm:whitespace-nowrap max-sm:items-center;
+  
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar on mobile sidebar for clean look */
+#finder .sidebar::-webkit-scrollbar {
+  @apply max-sm:hidden;
 }
 
 #finder .sidebar h3 {
   @apply text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3;
+  @apply max-sm:hidden; 
 }
 
 #finder .sidebar ul {
   @apply flex flex-col gap-1;
-  @apply max-sm:flex-row max-sm:gap-2;
+  /* 📱 MOBILE: Layout items in a row */
+  @apply max-sm:flex-row max-sm:items-center max-sm:gap-2;
 }
 
 #finder .sidebar li {
   @apply flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer 
-         transition-all text-sm text-gray-700 font-medium;
+         transition-all text-sm text-gray-700 font-medium whitespace-nowrap;
   @apply hover:bg-gray-200/50;
   
-  /* 📱 MOBILE PILLS */
-  @apply max-sm:bg-gray-100 max-sm:rounded-full max-sm:px-4;
+  /* 📱 MOBILE PILLS: Make them look like tabs */
+  @apply max-sm:bg-gray-100 max-sm:rounded-full max-sm:px-3 max-sm:py-1 max-sm:text-[11px];
 }
 
 #finder .sidebar li.active {
@@ -644,27 +671,21 @@ nav time {
 
 /* ================= CONTENT AREA ================= */
 #finder .content {
-  @apply flex-1 relative bg-white;
-}
-
-/* Desktop Drag Area */
-.desktop-canvas {
-  @apply w-full h-full overflow-hidden;
-}
-
-/* Mobile Grid Area */
-.mobile-grid {
-  @apply grid grid-cols-3 gap-y-8 gap-x-2 p-6 overflow-y-auto h-full items-start;
+  @apply flex-1 relative bg-white overflow-y-auto;
+  /* Ensure this can scroll on mobile */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ================= FILE ITEMS ================= */
 #finder .finder-item {
-  @apply flex flex-col items-center gap-1 p-2 rounded-md border border-transparent;
+  @apply flex flex-col items-center gap-1 p-2 rounded-lg border border-transparent transition-all;
   @apply hover:bg-blue-50/50;
+  /* Ensure items don't disappear on drag in mobile */
+  @apply max-sm:relative max-sm:!transform-none max-sm:!left-auto max-sm:!top-auto;
 }
 
 #finder .finder-item.selected {
-  @apply bg-blue-100/50 border-blue-200/50;
+  @apply bg-blue-500/10 border-blue-200;
 }
 
 #finder .finder-item img {
@@ -673,8 +694,12 @@ nav time {
 }
 
 #finder .finder-item p {
-  @apply text-[11px] text-center w-24 leading-tight text-gray-800 break-words;
-  @apply max-sm:w-full max-sm:px-1;
+  @apply text-[11px] text-center w-24 leading-tight text-gray-800 break-words mt-1 px-1 rounded;
+  @apply max-sm:w-full max-sm:text-[10px];
+}
+
+#finder .finder-item.selected p {
+  @apply bg-blue-600 text-white;
 }
 
 /* ================= TXT FILE ================= */
@@ -881,3 +906,10 @@ nav time {
   @apply text-sm text-gray-600 leading-relaxed;
   @apply max-sm:text-xs;
 }
+
+
+
+
+
+
+/* toggle colors are :bg-[#1e1e1e] text-[#cccccc] */
