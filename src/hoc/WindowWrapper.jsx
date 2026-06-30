@@ -4,116 +4,147 @@ import gsap from "gsap";
 import { useLayoutEffect, useRef } from "react";
 import { Draggable } from "gsap/Draggable";
 
+gsap.registerPlugin(Draggable);
+
 const WindowWrapper = (Component, windowKey) => {
   const Wrapped = (props) => {
     const {
-      focusWindow,
       windows,
+      focusWindow,
       minimizeWindow,
       maximizeWindow,
       restoreWindow,
     } = useWindowStore();
 
-    const { isOpen, zIndex, isMinimized, isMaximized } =
+    const { isOpen, isMinimized, isMaximized, zIndex } =
       windows[windowKey];
 
     const ref = useRef(null);
-    const dragInstance = useRef(null);
+    const dragRef = useRef(null);
+    const initialized = useRef(false);
 
-    // 🔥 OPEN ANIMATION
+    // ---------------------------------------
+    // Initial Position (only once)
+    // ---------------------------------------
+    useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el || initialized.current) return;
+
+      gsap.set(el, {
+        x: 120,
+        y: 80,
+      });
+
+      initialized.current = true;
+    }, []);
+
+    // ---------------------------------------
+    // Open Animation
+    // ---------------------------------------
     useGSAP(() => {
       const el = ref.current;
+
       if (!el || !isOpen || isMinimized) return;
 
       el.style.display = "block";
 
+      gsap.killTweensOf(el);
+
       gsap.fromTo(
         el,
-        { scale: 0.8, opacity: 0, y: 40 },
         {
-          scale: 1,
+          opacity: 0,
+          scale: 0.92,
+        },
+        {
           opacity: 1,
-          y: 0,
-          duration: 0.4,
+          scale: 1,
+          duration: 0.28,
+          ease: "power2.out",
         }
       );
     }, [isOpen, isMinimized]);
 
-    // 🟡 MINIMIZE (FIXED)
+    // ---------------------------------------
+    // Minimize Animation
+    // ---------------------------------------
     useGSAP(() => {
       const el = ref.current;
-      if (!el) return;
 
-      if (isMinimized) {
-        gsap.killTweensOf(el);
+      if (!el || !isMinimized) return;
 
-        gsap.to(el, {
-          scale: 0.5,
-          opacity: 0,
-          y: 120,
-          duration: 0.25,
-          onComplete: () => {
-            el.style.display = "none";
-          },
-        });
-      } else if (isOpen) {
-        // 🔥 restore properly
-        el.style.display = "block";
+      gsap.killTweensOf(el);
 
-        gsap.fromTo(
-          el,
-          { scale: 0.8, opacity: 0, y: 40 },
-          {
-            scale: 1,
-            opacity: 1,
-            y: 0,
-            duration: 0.3,
-          }
-        );
-      }
+      gsap.to(el, {
+        opacity: 0,
+        scale: 0.85,
+        duration: 0.22,
+        ease: "power2.in",
+        onComplete: () => {
+          el.style.display = "none";
+        },
+      });
     }, [isMinimized]);
-    // 🟢 MAXIMIZE (ONLY SIZE CHANGE)
+
+    // ---------------------------------------
+    // Maximize / Restore
+    // ---------------------------------------
     useGSAP(() => {
       const el = ref.current;
       if (!el) return;
 
-      if (isMaximized) {
-        gsap.to(el, {
-          width: "83vw",
-          height: "87vh",
-          duration: 0.3,
-        });
-      } else {
-        gsap.to(el, {
-          width: 500,
-          height: 350,
-          duration: 0.3,
-        });
-      }
+      gsap.to(el, {
+        width: isMaximized ? "83vw" : 500,
+        height: isMaximized ? "87vh" : 350,
+        duration: 0.25,
+        ease: "power2.out",
+      });
     }, [isMaximized]);
 
-    // 🧠 DRAGGABLE
+    // ---------------------------------------
+    // Window Draggable
+    // ---------------------------------------
     useGSAP(() => {
       const el = ref.current;
       if (!el) return;
 
-      const header = el.querySelector(".window-header");
-
-      const [instance] = Draggable.create(el, {
-        trigger: header || el,
+      const [drag] = Draggable.create(el, {
+        type: "x,y",
+        trigger: el,
         bounds: "body",
+        dragClickables: false,
 
-        onPress: () => {
+        onPress(e) {
           focusWindow(windowKey);
+
+          const target = e.target;
+
+          // Don't move window when interacting
+          // with Finder icons or excluded elements.
+          if (
+            target.closest(".finder-item") ||
+            target.closest(".no-window-drag")
+          ) {
+            this.endDrag();
+            return;
+          }
         },
       });
 
-      dragInstance.current = instance;
+      dragRef.current = drag;
 
-      return () => instance.kill();
+      // Make draggable available to child components
+      el.windowDrag = drag;
+
+      return () => {
+        delete el.windowDrag;
+        drag.kill();
+      };
     }, []);
 
-    // 👁️ ONLY HANDLE OPEN (NOT MINIMIZE)
+    // ---------------------------------------
+    // Visibility
+    // ---------------------------------------
     useLayoutEffect(() => {
       const el = ref.current;
       if (!el) return;
@@ -129,11 +160,16 @@ const WindowWrapper = (Component, windowKey) => {
       <section
         id={windowKey}
         ref={ref}
-        style={{ zIndex }}
-        className="absolute bg-white rounded-xl shadow-xl "
+        style={{
+          zIndex,
+          top: 100,
+          left: 100,
+        }}
+        className="absolute bg-white rounded-xl shadow-xl overflow-hidden"
       >
         <Component
           {...props}
+          isMaximized={isMaximized}
           onMinimize={(e) => {
             e?.stopPropagation();
             minimizeWindow(windowKey);
@@ -146,14 +182,14 @@ const WindowWrapper = (Component, windowKey) => {
             e?.stopPropagation();
             restoreWindow(windowKey);
           }}
-          isMaximized={isMaximized}
         />
       </section>
     );
   };
 
-  Wrapped.displayName = `WindowWrapper(${Component.displayName || Component.name || "Component"
-    })`;
+  Wrapped.displayName = `WindowWrapper(${
+    Component.displayName || Component.name || "Component"
+  })`;
 
   return Wrapped;
 };

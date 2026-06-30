@@ -14,6 +14,7 @@ import Draggable from 'gsap/Draggable'
 gsap.registerPlugin(Draggable)
 
 const Finder = () => {
+  console.log("✅ Finder component rendered");
   const { openWindow } = useWindowStore()
   const { activeLocation, setActiveLocation } = useLoactionStore()
 
@@ -41,8 +42,8 @@ const Finder = () => {
     // Only initialize Draggable on desktop-sized screens
     if (window.innerWidth < 640) return
 
-    const elements = document.querySelectorAll(".finder-item")
-    
+    const elements =
+  containerRef.current?.querySelectorAll(".finder-item") ?? [];
     elements.forEach((el, index) => {
       const id = el.dataset.id
       const saved = positions[id]
@@ -57,32 +58,64 @@ const Finder = () => {
       gsap.set(el, { x, y })
     })
 
-    const draggables = Draggable.create(".finder-item", {
-      bounds: containerRef.current,
-      onPress() {
-        this.update()
-        this.target.style.zIndex = 1000
-      },
-      onRelease() {
-        this.target.style.zIndex = ""
-      },
-      onDragEnd() {
-        const id = this.target.dataset.id
-        const snap = 80
-        const snappedX = Math.round(this.x / snap) * snap
-        const snappedY = Math.round(this.y / snap) * snap
+  const draggables = Draggable.create(elements, {
+  type: "x,y",
+  bounds: containerRef.current,
 
-        gsap.to(this.target, {
-          x: snappedX,
-          y: snappedY,
-          duration: 0.2,
-          ease: "power2.out",
-        })
+  onPress() {
+    this.update();
 
-        setPosition(id, { x: snappedX, y: snappedY })
-      },
-    })
+    // Bring dragged folder to front
+    this.target.style.zIndex = 1000;
 
+    // Disable window dragging while dragging folders
+    const windowEl = this.target.closest("section");
+
+    if (windowEl?.windowDrag) {
+      windowEl.windowDrag.disable();
+    }
+  },
+
+  onDrag() {
+    // Optional: if you want live updates while dragging
+    // const id = this.target.dataset.id;
+    // setPosition(id, { x: this.x, y: this.y });
+  },
+
+  onRelease() {
+    // Restore z-index
+    this.target.style.zIndex = "";
+
+    // Re-enable window dragging
+    const windowEl = this.target.closest("section");
+
+    if (windowEl?.windowDrag) {
+      windowEl.windowDrag.enable();
+    }
+  },
+
+  onDragEnd() {
+    const id = this.target.dataset.id;
+
+    const snap = 80;
+
+    const snappedX = Math.round(this.x / snap) * snap;
+    const snappedY = Math.round(this.y / snap) * snap;
+
+    gsap.to(this.target, {
+      x: snappedX,
+      y: snappedY,
+      duration: 0.2,
+      ease: "power2.out",
+    });
+
+    // Save new position
+    setPosition(id, {
+      x: snappedX,
+      y: snappedY,
+    });
+  },
+});
     return () => {
       draggables.forEach((d) => d.kill())
     }

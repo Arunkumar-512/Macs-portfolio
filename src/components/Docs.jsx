@@ -58,24 +58,48 @@ const Docs = () => {
 
 
 
-  const toggleApp = (app) => { 
-    if (!app.canOpen) return;
+const toggleApp = (app) => {
+  if (!app.canOpen) return;
 
-    const window = windows[app.id];
+  console.log("=================================");
+  console.log("Clicked App:", app.id);
 
-    if(!window) {
-      console.error(`Window with id ${app.id} not found.`);
-      return;
-    }
+  const win = windows[app.id];
 
-    if(window.isOpen){
-      closeWindow(app.id);
-    }else{
-      openWindow(app.id);
-    }
-    
-    console.log(windows)
+  if (!win) {
+    console.error(`❌ Window with id "${app.id}" not found.`);
+    console.log("Available windows:", Object.keys(windows));
+    return;
   }
+
+  console.log("Before:", {
+    isOpen: win.isOpen,
+    isMinimized: win.isMinimized,
+    isMaximized: win.isMaximized,
+  });
+
+  if (win.isOpen) {
+    console.log("➡️ Closing", app.id);
+    closeWindow(app.id);
+  } else {
+    console.log("➡️ Opening", app.id);
+    openWindow(app.id);
+  }
+
+  // Wait for Zustand to update
+  setTimeout(() => {
+    const updated = useWindowStore.getState().windows[app.id];
+
+    console.log("After:", {
+      isOpen: updated.isOpen,
+      isMinimized: updated.isMinimized,
+      isMaximized: updated.isMaximized,
+    });
+
+    console.log("Full window state:", useWindowStore.getState().windows);
+    console.log("=================================");
+  }, 0);
+};
   return (
 
 
