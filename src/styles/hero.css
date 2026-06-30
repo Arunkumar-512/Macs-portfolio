@@ -1,0 +1,165 @@
+/* =========================================
+   HERO SECTION
+========================================= */
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  isolation: isolate;
+
+  background-image: url("/images/wallpaper12.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  color: #fff;
+}
+
+/* =========================================
+   OVERLAY
+========================================= */
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.10),
+      rgba(0,0,0,.25),
+      rgba(0,0,0,.55)
+    );
+
+  z-index: 1;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(
+      circle,
+      transparent 40%,
+      rgba(0,0,0,.55) 100%
+    );
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* =========================================
+   TYPOGRAPHY
+========================================= */
+
+.hero h1{
+    font-family: "Cormorant Garamond", serif;
+}
+
+.hero h2{
+    font-family: "Inter", sans-serif;
+}
+
+.hero p{
+    font-family: "Inter", sans-serif;
+}
+
+.hero button{
+    font-family: "Inter", sans-serif;
+}
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.hero button{
+
+    backdrop-filter: blur(8px);
+
+    transition:
+        background .4s,
+        color .4s,
+        transform .4s,
+        border-color .4s;
+
+    cursor:pointer;
+}
+
+.hero button:hover{
+
+    transform:translateY(-2px);
+}
+
+/* =========================================
+   BACKGROUND TITLE
+========================================= */
+
+.hero-bg-title{
+
+    user-select:none;
+    white-space:nowrap;
+
+    text-shadow:
+      0 0 30px rgba(255,255,255,.05);
+
+}
+
+/* =========================================
+   LABELS
+========================================= */
+
+.hero-label{
+
+    letter-spacing:.45em;
+
+    text-transform:uppercase;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width:1200px){
+
+.hero h1{
+
+font-size:5rem;
+
+}
+
+}
+
+@media (max-width:992px){
+
+.hero{
+
+background-position:65% center;
+
+}
+
+}
+
+@media (max-width:768px){
+
+.hero{
+
+background-position:70% center;
+
+}
+
+}
+
+@media (max-width:640px){
+
+.hero{
+
+height:100svh;
+
+}
+
+}

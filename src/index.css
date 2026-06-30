@@ -6,9 +6,9 @@ html,
 body {
   width: 100dvw;
   /* ✅ FIX */
-  overflow: auto;
+  overflow: hidden;
   height: 100dvh;
-  background-image: url("/images/wallpaper03.jpg");
+  background-image: url("/images/wallpaper12.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -39,7 +39,8 @@ body {
   }
 nav {
   @apply flex justify-between items-center text-white 
-  bg-white/5 backdrop-blur-2xl 
+  bg-black/15
+backdrop-blur-xl backdrop-blur-2xl 
   px-6 py-2 select-none 
   border-b border-white/10;
 
@@ -616,92 +617,89 @@ nav time {
   }
 
 }resume css if required make changes to thecss
+
 /* ================= FINDER WINDOW ================= */
 #finder {
-  /* Default Desktop: Center using fixed + translate */
-  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-         w-full max-w-4xl h-[70vh] bg-white shadow-2xl rounded-xl flex flex-col overflow-hidden;
+  /* 1. HUGE Z-INDEX: Ensures it stays above the dock.
+     2. FIXED POSITION: Critical for mobile overlay behavior.
+  */
+  z-index: 9999 !important; 
+  position: fixed !important;
+
+  /* Desktop Defaults */
+  @apply top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+         w-full max-w-4xl h-[70vh] bg-white shadow-2xl rounded-xl flex flex-col;
   
-  /* 📱 MOBILE VIEW: Reset translate so it doesn't fly off-screen */
+  /* 📱 MOBILE VIEW FIX */
   @apply max-sm:top-0 max-sm:left-0 max-sm:translate-x-0 max-sm:translate-y-0 
-         max-sm:w-screen max-sm:h-screen max-sm:max-h-none max-sm:rounded-none max-sm:z-[100];
+         max-sm:w-full max-sm:rounded-none;
+
+  /* STRICT HEIGHT CALCULATION:
+     We use 100dvh (Dynamic Viewport Height) to account for mobile browser bars.
+     We subtract 85px (the approximate height of your dock) to keep the window ABOVE it.
+  */
+  height: calc(100dvh - 85px) !important;
+  max-height: calc(100dvh - 85px) !important;
+  
+  /* Prevents the window from causing unwanted external scrollbars */
+  overflow: hidden;
 }
 
 /* ================= SIDEBAR ================= */
 #finder .sidebar {
-  /* Desktop Defaults */
+  /* Desktop */
   @apply w-48 bg-gray-50/80 border-r border-gray-200 p-4 shrink-0 overflow-y-auto;
 
-  /* 📱 MOBILE TOP NAV: Fixed height, horizontal scroll */
-  @apply max-sm:w-full max-sm:h-14 max-sm:flex max-sm:flex-row max-sm:p-2 
+  /* 📱 MOBILE TOP NAV */
+  @apply max-sm:w-full max-sm:h-auto max-sm:flex-row max-sm:p-2 
          max-sm:border-r-0 max-sm:border-b max-sm:overflow-x-auto 
-         max-sm:overflow-y-hidden max-sm:whitespace-nowrap max-sm:items-center;
+         max-sm:overflow-y-hidden max-sm:whitespace-nowrap max-sm:items-center 
+         max-sm:flex-shrink-0;
   
+  /* Prevent horizontal bounce on iOS */
   -webkit-overflow-scrolling: touch;
 }
 
-/* Hide scrollbar on mobile sidebar for clean look */
-#finder .sidebar::-webkit-scrollbar {
-  @apply max-sm:hidden;
-}
-
-#finder .sidebar h3 {
-  @apply text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3;
-  @apply max-sm:hidden; 
-}
-
 #finder .sidebar ul {
-  @apply flex flex-col gap-1;
-  /* 📱 MOBILE: Layout items in a row */
-  @apply max-sm:flex-row max-sm:items-center max-sm:gap-2;
-}
-
-#finder .sidebar li {
-  @apply flex items-center gap-2 px-3 py-1.5 rounded-md cursor-pointer 
-         transition-all text-sm text-gray-700 font-medium whitespace-nowrap;
-  @apply hover:bg-gray-200/50;
-  
-  /* 📱 MOBILE PILLS: Make them look like tabs */
-  @apply max-sm:bg-gray-100 max-sm:rounded-full max-sm:px-3 max-sm:py-1 max-sm:text-[11px];
-}
-
-#finder .sidebar li.active {
-  @apply bg-blue-500 text-white shadow-sm;
+  @apply flex flex-col gap-1 max-sm:flex-row max-sm:flex-nowrap;
 }
 
 /* ================= CONTENT AREA ================= */
 #finder .content {
-  @apply flex-1 relative bg-white overflow-y-auto;
-  /* Ensure this can scroll on mobile */
-  -webkit-overflow-scrolling: touch;
+  @apply flex-1 relative bg-white overflow-hidden;
+  
+  /* 📱 MOBILE SCROLLING: 
+     On mobile, we only want the files to scroll, not the window itself.
+  */
+  @apply max-sm:overflow-y-auto;
+  
+  /* Add padding at the bottom so the last row of icons isn't touching the dock */
+  @apply max-sm:pb-10; 
 }
 
 /* ================= FILE ITEMS ================= */
 #finder .finder-item {
-  @apply flex flex-col items-center gap-1 p-2 rounded-lg border border-transparent transition-all;
-  @apply hover:bg-blue-50/50;
-  /* Ensure items don't disappear on drag in mobile */
-  @apply max-sm:relative max-sm:!transform-none max-sm:!left-auto max-sm:!top-auto;
-}
-
-#finder .finder-item.selected {
-  @apply bg-blue-500/10 border-blue-200;
+  @apply flex flex-col items-center gap-1 p-2 rounded-md border border-transparent transition-colors;
 }
 
 #finder .finder-item img {
-  @apply w-12 h-12 object-contain select-none;
+  @apply w-12 h-12 object-contain select-none pointer-events-none;
   @apply max-sm:w-10 max-sm:h-10;
 }
 
 #finder .finder-item p {
-  @apply text-[11px] text-center w-24 leading-tight text-gray-800 break-words mt-1 px-1 rounded;
-  @apply max-sm:w-full max-sm:text-[10px];
+  @apply text-[11px] text-center w-24 leading-tight text-gray-800 break-words;
+  @apply max-sm:w-full max-sm:px-1;
 }
 
-#finder .finder-item.selected p {
-  @apply bg-blue-600 text-white;
+/* Hide horizontal scrollbar for mobile sidebar */
+#finder .sidebar::-webkit-scrollbar {
+  display: none;
 }
-
+#finder .sidebar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 /* ================= TXT FILE ================= */
 #txtfile {
   @apply w-md absolute top-36 right-32 bg-white shadow-2xl drop-shadow-2xl rounded-xl overflow-hidden;
@@ -880,7 +878,8 @@ nav time {
   /* Subtle lift effect on desktop */
   @apply hover:bg-white hover:shadow-xl hover:border-blue-100 hover:-translate-y-1;
 
-  @apply max-sm:p-4 max-sm:gap-2 max-sm:bg-white/50;
+  @apply max-sm:p-4 max-sm:gap-2 max-sm:bg-black/15
+backdrop-blur-xl;
 }
 
 /* Metadata (Year & Category) */
@@ -909,7 +908,3 @@ nav time {
 
 
 
-
-
-
-/* toggle colors are :bg-[#1e1e1e] text-[#cccccc] */
