@@ -37,8 +37,6 @@ export default function Welcome() {
     const titleLetters = titleRef.current.querySelectorAll("span");
     const subtitleLetters = subtitleRef.current.querySelectorAll("span");
 
-    /* Intro Animation */
-
     gsap.fromTo(
       [...subtitleLetters, ...titleLetters],
       {
@@ -58,8 +56,6 @@ export default function Welcome() {
       }
     );
 
-    /* Floating Background Word */
-
     gsap.to(".hero-bg-title", {
       y: 12,
       duration: 6,
@@ -68,18 +64,14 @@ export default function Welcome() {
       ease: "sine.inOut",
     });
 
-    /* Decorative Labels */
-
     gsap.from(".hero-label", {
       opacity: 0,
       y: 25,
-      stagger: 0.12,
-      delay: 0.9,
+      stagger: 0.15,
+      delay: 0.8,
       duration: 1,
       ease: "power3.out",
     });
-
-    /* Letter Hover */
 
     const setupHover = (container, type) => {
       const letters = container.querySelectorAll("span");
@@ -95,12 +87,12 @@ export default function Welcome() {
         const mouseX = e.clientX - rect.left;
 
         letters.forEach((letter) => {
-          const r = letter.getBoundingClientRect();
+          const bounds = letter.getBoundingClientRect();
 
           const center =
-            r.left -
+            bounds.left -
             rect.left +
-            r.width / 2;
+            bounds.width / 2;
 
           const distance = Math.abs(center - mouseX);
 
@@ -112,9 +104,13 @@ export default function Welcome() {
             fontWeight:
               min +
               (max - min) * intensity,
+
             scale: 1 + intensity * 0.42,
+
             y: -10 * intensity,
+
             duration: 0.35,
+
             overwrite: true,
           });
         });
@@ -174,179 +170,221 @@ export default function Welcome() {
     <section
       ref={containerRef}
       id="welcome"
-      className="relative h-screen overflow-hidden text-white isolate"
+      className="
+        relative
+        h-screen
+        overflow-hidden
+        isolate
+        text-white
+        w-full
+      "
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        position: 'relative',
+        top: 'auto',
+        left: 'auto',
+        transform: 'none',
+        paddingLeft: '0',
+        paddingRight: '0',
+      }}
     >
-      {/* Dark Overlay */}
-
-      <div className="absolute inset-0 bg-black/10 z-0" />
-
-      {/* Gradient */}
-
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,.18))",
-        }}
-      />
-
-      {/* Warm Glow */}
-
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(circle at 58% 55%, rgba(214,178,127,.20), transparent 42%)",
-        }}
-      />
-
-      {/* Huge Background Name */}
-
+      {/* BACKGROUND NAME - SAME SIZE */}
       <h1
         className="
           hero-bg-title
           absolute
-          left-[49%]
-          top-[48%]
+          left-1/2
+          top-1/2
           -translate-x-1/2
           -translate-y-1/2
-          text-[22vw]
-          xl:text-[21rem]
+          text-[18vw]
+          xl:text-[17rem]
           font-serif
-          tracking-[-0.10em]
+          tracking-[-0.05em]
           leading-none
-          text-white/[0.06]
+          text-white/[0.05]
           pointer-events-none
           select-none
-          z-10
+          z-0
         "
       >
         ARUN
       </h1>
 
-      {/* Hero Content */}
-
-      <div className="relative z-30 flex h-full items-center">
-        <div
-          className="
-            ml-[21%]
-            max-w-[500px]
-            -translate-y-14
-            flex
-            flex-col
-            items-start
-          "
+      {/* ===========================
+          MAIN HERO - LEFT ALIGNED (2x SMALLER)
+      =========================== */}
+      <div 
+        className="relative z-20 h-full flex items-center w-full"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        <div 
+          className="w-full h-full flex items-center"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
+            height: '100%',
+          }}
         >
-          {/* Hello */}
-
           <div
-            ref={subtitleRef}
             className="
-              uppercase
-              tracking-[0.82em]
-              text-[12px]
-              text-white/70
-              mb-5
-              cursor-default
+              flex
+              flex-col
+              items-start
+              justify-center
+              text-left
+              -translate-y-6
+              max-w-[500px]
+              w-full
             "
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              justifyContent: 'center',
+              textAlign: 'left',
+              paddingLeft: 'clamp(3rem, 8vw, 10rem)',
+              paddingRight: '2rem',
+              maxWidth: '500px',
+              width: '100%',
+            }}
           >
-            {renderText("HELLO, I'M", "", 100)}
+            {/* HELLO - 2x SMALLER */}
+            <div
+              ref={subtitleRef}
+              className="
+                uppercase
+                text-[11px]
+                tracking-[0.7em]
+                text-white/60
+                cursor-default
+              "
+            >
+              {renderText("HELLO, I'M", "", 100)}
+            </div>
+
+            {/* NAME - 2x SMALLER */}
+            <div
+              ref={titleRef}
+              className="mt-4 cursor-default"
+            >
+              {renderText(
+                "Arun",
+                `
+                  font-serif
+                  text-[4rem]
+                  md:text-[4.5rem]
+                  lg:text-[5rem]
+                  xl:text-[5.5rem]
+                  2xl:text-[6rem]
+                  leading-[0.82]
+                  tracking-[-0.07em]
+                  text-white
+                `,
+                400
+              )}
+            </div>
+
+            {/* GOLD DIVIDER - 2x SMALLER */}
+            <div
+              className="
+                mt-5
+                h-[2px]
+                w-20
+                rounded-full
+                bg-[#d6b27f]
+              "
+            />
+
+            {/* ROLE - 2x SMALLER */}
+            <h2
+              className="
+                mt-6
+                uppercase
+                text-[16px]
+                lg:text-[18px]
+                tracking-[0.4em]
+                font-light
+                leading-relaxed
+                text-white/90
+                pb-4
+                sm:pb-0
+              "
+            >
+              Full Stack Developer
+            </h2>
+
+            {/* DESCRIPTION - 2x SMALLER */}
+            <p
+              className="
+                hidden
+                sm:block
+                mt-7
+                max-w-[500px]
+                text-[15px]
+                lg:text-[16px]
+                leading-[1.9]
+                text-white/70
+              "
+            >
+              I craft modern digital experiences through thoughtful
+              design, scalable architecture, and smooth interactions.
+              Blending engineering with creativity, I build web
+              applications that are fast, elegant, and made to leave a
+              lasting impression.
+            </p>
+
+            {/* CTA - 2x SMALLER */}
+            {/* <button
+              className="
+                mt-10
+                px-8
+                py-3.5
+                rounded-full
+                border
+                border-[#d6b27f]
+                uppercase
+                tracking-[0.3em]
+                text-[11px]
+                transition-all
+                duration-500
+                hover:bg-[#d6b27f]
+                hover:text-black
+              "
+            >
+              Explore My Work →
+            </button> */}
           </div>
-
-          {/* Name */}
-
-          <div
-            ref={titleRef}
-            className="cursor-default"
-          >
-            {renderText(
-              "Arun",
-              `
-                font-serif
-                text-[6.6rem]
-                md:text-[7.2rem]
-                leading-[0.82]
-                tracking-[-0.06em]
-                text-white
-              `,
-              400
-            )}
-          </div>
-
-          {/* Gold Line */}
-
-          <div className="mt-5 h-[2px] w-20 rounded-full bg-[#d6b27f]" />
-
-          {/* Subtitle */}
-
-          <h2
-            className="
-              mt-7
-              uppercase
-              text-[23px]
-              tracking-[0.28em]
-              leading-[1.5]
-              font-light
-              text-white/90
-            "
-          >
-            Full Stack Developer
-          </h2>
-
-          {/* Description */}
-
-          <p
-            className="
-              mt-6
-              max-w-[410px]
-              text-[18px]
-              leading-8
-              text-white/70
-            "
-          >
-            I build scalable web applications with modern
-            technologies and elegant user experiences.
-          </p>
-
-          {/* Button */}
-
-          <button
-            className="
-              mt-10
-              px-10
-              py-4
-              rounded-full
-              border
-              border-[#d6b27f]
-              uppercase
-              tracking-[0.30em]
-              text-sm
-              transition-all
-              duration-500
-              hover:bg-[#d6b27f]
-              hover:text-black
-            "
-          >
-            Explore My Work →
-          </button>
-                  </div>
+        </div>
       </div>
 
-      {/* =========================
-          TOP LEFT LABEL
-      ========================== */}
+      {/* ===========================
+          SIDE LABELS - SAME SIZE AS BEFORE
+      =========================== */}
 
+      {/* TOP LEFT */}
       <div
         className="
           hero-label
           absolute
-          left-[16%]
-          top-[18%]
+          left-6
+          md:left-10
+          lg:left-16
+          top-20
           z-30
           text-[11px]
           uppercase
           tracking-[0.45em]
-          leading-6
+          leading-7
           text-white/60
         "
       >
@@ -355,141 +393,145 @@ export default function Welcome() {
         Digital
         <br />
         Experiences
-
-        <div className="mt-5 h-[2px] w-8 bg-[#d6b27f]" />
+        <div className="mt-6 h-[2px] w-10 bg-[#d6b27f]" />
       </div>
 
-      {/* =========================
-          TOP RIGHT LABEL
-      ========================== */}
-
+      {/* TOP RIGHT */}
       <div
         className="
           hero-label
           absolute
-          right-[15%]
-top-[15%]
+          right-6
+          md:right-10
+          lg:right-16
+          top-20
           z-30
           text-right
           text-[11px]
           uppercase
           tracking-[0.45em]
-          leading-6
-          text-white/70
+          leading-7
+          text-white/60
         "
       >
-        Full Stack
+        Frontend
         <br />
-        Developer
-
-        <div className="mt-5 ml-auto h-[2px] w-8 bg-[#d6b27f]" />
+        Backend
+        <br />
+        Cloud
+        <div className="mt-6 ml-auto h-[2px] w-10 bg-[#d6b27f]" />
       </div>
 
-      {/* =========================
-          BOTTOM LEFT
-      ========================== */}
-
+      {/* BOTTOM LEFT */}
       <div
         className="
           hero-label
           absolute
-          left-[16%]
-          bottom-[13%]
+          left-6
+          md:left-10
+          lg:left-16
+          bottom-20
           z-30
           text-[11px]
           uppercase
           tracking-[0.45em]
-          leading-6
+          leading-7
           text-white/60
         "
       >
-        Passionate
+        React
         <br />
-        Creative
+        Next.js
         <br />
-        Problem Solver
-
-        <div className="mt-5 h-[2px] w-8 bg-[#d6b27f]" />
+        TypeScript
+        <div className="mt-6 h-[2px] w-10 bg-[#d6b27f]" />
       </div>
 
-      {/* =========================
-          BOTTOM RIGHT
-      ========================== */}
-
+      {/* BOTTOM RIGHT */}
       <div
         className="
           hero-label
           absolute
-         right-[15%]
-bottom-[14%]
+          right-6
+          md:right-10
+          lg:right-16
+          bottom-20
           z-30
           text-right
           text-[11px]
           uppercase
           tracking-[0.45em]
-          leading-6
+          leading-7
           text-white/60
         "
       >
+        UI / UX
+        <br />
+        Performance
+        <br />
         Clean Code
-        <br />
-        Thoughtful Design
-        <br />
-        Real Impact
-
-        <div className="mt-5 ml-auto h-[2px] w-8 bg-[#d6b27f]" />
+        <div className="mt-6 ml-auto h-[2px] w-10 bg-[#d6b27f]" />
       </div>
 
-      {/* =========================
-          GOLD GLOW
-      ========================== */}
-
+      {/* ===========================
+          BOTTOM INFO BAR - SAME SIZE
+      =========================== */}
       <div
         className="
           absolute
-         right-[18%]
-          top-[18%]
-          w-[620px]
-          h-[620px]
-          blur-[170px]
-          rounded-full
-          bg-[#d6b27f]/10
-          pointer-events-none
-          z-10
+          bottom-10
+          left-1/2
+          -translate-x-1/2
+          z-30
+          flex
+          items-center
+          gap-5
+          text-[11px]
+          uppercase
+          tracking-[0.45em]
+          text-white/45
         "
-      />
+      >
+        <div className="h-px w-16 bg-white/20" />
+        <span>Scroll</span>
+        <div className="h-px w-16 bg-white/20" />
+      </div>
 
-      {/* =========================
-          VIGNETTE
-      ========================== */}
-
-      <div
-        className="absolute inset-0 pointer-events-none z-20"
-        style={{
-          background:
-            "radial-gradient(circle, transparent 55%, rgba(0,0,0,.45) 100%)",
-        }}
-      />
-
-      {/* =========================
-          NOISE TEXTURE
-      ========================== */}
-
+      {/* ===========================
+          SCROLL INDICATOR - SAME SIZE
+      =========================== */}
       <div
         className="
           absolute
-          inset-0
-          pointer-events-none
-          opacity-[0.025]
-          mix-blend-soft-light
-          z-40
+          bottom-20
+          left-1/2
+          -translate-x-1/2
+          z-30
         "
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,.5) .6px, transparent .6px)",
-          backgroundSize: "5px 5px",
-        }}
-      />
+      >
+        <div
+          className="
+            h-12
+            w-[22px]
+            rounded-full
+            border
+            border-white/25
+            flex
+            justify-center
+            pt-2
+          "
+        >
+          <div
+            className="
+              h-2
+              w-2
+              rounded-full
+              bg-[#d6b27f]
+              animate-bounce
+            "
+          />
+        </div>
+      </div>
     </section>
   );
 }
