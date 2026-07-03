@@ -1,22 +1,58 @@
-import { WindowControls } from '#components'
-import { locations } from '#constants/index.js'
-import WindowWrapper from '#hoc/WindowWrapper'
-import useLoactionStore from '#store/location.js'
-import useWindowStore from '#store/window.js'
-import useFinderStore from '#store/finder'
-import clsx from 'clsx'
-import { Search } from 'lucide-react'
+import { WindowControls } from "#components";
+import { locations } from "#constants";
+import WindowWrapper from "#hoc/WindowWrapper";
+import useLocationStore from "#store/location";
+import useWindowStore from "#store/window";
+import useFinderStore from "#store/finder";
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import Draggable from 'gsap/Draggable'
+import clsx from "clsx";
+import { Search, Folder } from "lucide-react";
 
-gsap.registerPlugin(Draggable)
+import { useEffect, useRef, memo, useCallback, useState } from "react";
+import { gsap } from "gsap";
+import Draggable from "gsap/Draggable";
+
+gsap.registerPlugin(Draggable);
+
+// --- Memoized Finder Item (only re‑renders on own changes) ---
+const FinderItem = memo(({ item, selected, onSelect, onOpen, transform }) => {
+  return (
+    <div
+      data-id={item.id}
+      className={clsx(
+        "finder-item absolute w-28 flex flex-col items-center rounded-xl cursor-pointer select-none transition-colors duration-200",
+        selected
+          ? "bg-blue-500/20 ring-2 ring-blue-500/50"
+          : "hover:bg-gray-100/80"
+      )}
+      style={{
+        transform: transform,
+        willChange: "transform",
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSelect(item.id, e.metaKey || e.ctrlKey);
+      }}
+      onDoubleClick={() => onOpen(item)}
+    >
+      <img
+        src={item.icon}
+        alt={item.name}
+        className="w-16 h-16 object-contain pointer-events-none drop-shadow-sm"
+        loading="lazy"
+      />
+      <p className="mt-2 text-xs font-medium text-center text-gray-700 leading-tight break-words px-1 max-w-full">
+        {item.name}
+      </p>
+    </div>
+  );
+});
+
+FinderItem.displayName = "FinderItem";
 
 const Finder = () => {
-  console.log("✅ Finder component rendered");
-  const { openWindow } = useWindowStore()
-  const { activeLocation, setActiveLocation } = useLoactionStore()
+  const { openWindow } = useWindowStore();
+  const { activeLocation, setActiveLocation } = useLocationStore();
 
   const {
     positions,
@@ -24,221 +60,266 @@ const Finder = () => {
     selectedIds,
     select,
     clearSelection,
-  } = useFinderStore()
+  } = useFinderStore();
 
-  const containerRef = useRef(null)
+  const containerRef = useRef(null);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 
-  // 🔥 GRID GENERATOR (Only used for initial desktop placement)
-  const generateInitialPosition = (index) => {
-    const spacingX = 110
-    const spacingY = 110
-    const col = index % 4
-    const row = Math.floor(index / 4)
-    return { x: col * spacingX + 20, y: row * spacingY + 20 }
-  }
-
-  // 🔥 GSAP DRAG SYSTEM
+  // --- Responsive ---
   useEffect(() => {
-    // Only initialize Draggable on desktop-sized screens
-    if (window.innerWidth < 640) return
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    const elements =
-  containerRef.current?.querySelectorAll(".finder-item") ?? [];
-    elements.forEach((el, index) => {
-      const id = el.dataset.id
-      const saved = positions[id]
-      const initial = generateInitialPosition(index)
+  // --- Initial grid (5 columns) ---
+  const generateInitialPosition = useCallback((index) => {
+    const spacingX = 130;
+    const spacingY = 120;
+    const col = index % 5;
+    const row = Math.floor(index / 5);
+    return { x: col * spacingX + 25, y: row * spacingY + 25 };
+  }, []);
 
-      const x = saved?.x ?? initial.x
-      const y = saved?.y ?? initial.y
+  // --- Desktop drag setup (re‑runs on location or desktop change) ---
+  useEffect(() => {
+    if (!isDesktop) return;
 
-      // Set initial position if not already saved
-      if (!saved) setPosition(id, { x, y })
-      
-      gsap.set(el, { x, y })
-    })
+    const container = containerRef.current;
+    if (!container) return;
 
-  const draggables = Draggable.create(elements, {
-  type: "x,y",
-  bounds: containerRef.current,
+    const items = container.querySelectorAll(".finder-item");
+    if (items.length === 0) return;
 
-  onPress() {
-    this.update();
-
-    // Bring dragged folder to front
-    this.target.style.zIndex = 1000;
-
-    // Disable window dragging while dragging folders
-    const windowEl = this.target.closest("section");
-
-    if (windowEl?.windowDrag) {
-      windowEl.windowDrag.disable();
-    }
-  },
-
-  onDrag() {
-    // Optional: if you want live updates while dragging
-    // const id = this.target.dataset.id;
-    // setPosition(id, { x: this.x, y: this.y });
-  },
-
-  onRelease() {
-    // Restore z-index
-    this.target.style.zIndex = "";
-
-    // Re-enable window dragging
-    const windowEl = this.target.closest("section");
-
-    if (windowEl?.windowDrag) {
-      windowEl.windowDrag.enable();
-    }
-  },
-
-  onDragEnd() {
-    const id = this.target.dataset.id;
-
-    const snap = 80;
-
-    const snappedX = Math.round(this.x / snap) * snap;
-    const snappedY = Math.round(this.y / snap) * snap;
-
-    gsap.to(this.target, {
-      x: snappedX,
-      y: snappedY,
-      duration: 0.2,
-      ease: "power2.out",
+    // Ensure every item has a saved position; apply to DOM
+    items.forEach((el, index) => {
+      const id = el.dataset.id;
+      let pos = positions[id];
+      if (!pos) {
+        const initial = generateInitialPosition(index);
+        pos = { x: initial.x, y: initial.y };
+        setPosition(id, pos);
+      }
+      // Apply transform directly (Draggable will read this)
+      el.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
     });
 
-    // Save new position
-    setPosition(id, {
-      x: snappedX,
-      y: snappedY,
+    // Create draggable instances
+    const draggables = Draggable.create(items, {
+      type: "x,y",
+      bounds: container,
+      inertia: false,
+      onPress() {
+        this.update();
+        this.target.style.zIndex = "1000";
+        const windowEl = this.target.closest("section");
+        if (windowEl?.windowDrag) windowEl.windowDrag.disable();
+      },
+      onRelease() {
+        this.target.style.zIndex = "";
+        const windowEl = this.target.closest("section");
+        if (windowEl?.windowDrag) windowEl.windowDrag.enable();
+      },
+      onDragEnd() {
+        const id = this.target.dataset.id;
+        const snap = 90;
+        const snappedX = Math.round(this.x / snap) * snap;
+        const snappedY = Math.round(this.y / snap) * snap;
+
+        gsap.to(this.target, {
+          x: snappedX,
+          y: snappedY,
+          duration: 0.25,
+          ease: "power3.out",
+          overwrite: "auto",
+        });
+
+        setPosition(id, { x: snappedX, y: snappedY });
+      },
     });
-  },
-});
+
     return () => {
-      draggables.forEach((d) => d.kill())
-    }
-  }, [activeLocation, setPosition]) // Added setPosition to dependencies
+      draggables.forEach((drag) => drag.kill());
+    };
+  }, [isDesktop, activeLocation, positions, generateInitialPosition, setPosition]);
 
-  const openItem = (item) => {
-    if (!item) return
-    if (item.kind === "folder") {
-      setActiveLocation(item)
-      return
-    }
-    if ((item.fileType === "url" || item.fileType === "fig") && item.href) {
-      window.open(item.href, "_blank")
-      return
-    }
-    if (item.fileType === "pdf") return openWindow("resume")
-    if (item.fileType === "img") return openWindow("imgfile", item)
-    if (item.fileType === "txt") return openWindow("txtfile", item)
-    if (item.fileType === "web") return openWindow("safari", item)
-    
-    console.warn("❌ Unknown file type:", item)
-  }
+  // --- Open files/folders ---
+  const openItem = useCallback(
+    (item) => {
+      if (!item) return;
+      if (item.kind === "folder") {
+        setActiveLocation(item);
+        return;
+      }
+      if ((item.fileType === "url" || item.fileType === "fig") && item.href) {
+        window.open(item.href, "_blank");
+        return;
+      }
+      if (item.fileType === "pdf") return openWindow("resume");
+      if (item.fileType === "img") return openWindow("imgfile", item);
+      if (item.fileType === "txt") return openWindow("txtfile", item);
+      if (item.fileType === "web") return openWindow("safari", item);
+      console.warn("Unknown file type:", item);
+    },
+    [openWindow, setActiveLocation]
+  );
 
-  const renderList = (name, items) => (
-    <div className="space-y-2 shrink-0">
-      <h3 className="text-[11px] font-semibold text-gray-400 uppercase px-2 max-sm:hidden">
-        {name}
+  // --- Selection handler ---
+  const handleSelect = useCallback(
+    (id, multi) => select(id, multi),
+    [select]
+  );
+
+  // --- Sidebar section (with mobile visibility control) ---
+  const renderSection = (title, items, hideOnMobile = false) => (
+    <div className={clsx("space-y-1 shrink-0", hideOnMobile && "hidden lg:block")}>
+      <h3 className="hidden lg:block text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-2">
+        {title}
       </h3>
-      <ul className="flex flex-col gap-1 max-sm:flex-row max-sm:overflow-x-auto">
+      <ul className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-1 scrollbar-hide">
         {items?.filter(Boolean).map((item) => {
-          const isActive = item.id === activeLocation?.id
+          const active = activeLocation?.id === item.id;
           return (
             <li
               key={item.id}
               onClick={() => setActiveLocation(item)}
               className={clsx(
-                "flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-all duration-200 whitespace-nowrap",
-                isActive ? "bg-blue-500 text-white shadow-sm" : "text-gray-700 hover:bg-gray-200"
+                "flex items-center gap-2 rounded-xl cursor-pointer transition-all duration-200 whitespace-nowrap px-3 py-2 text-sm",
+                active
+                  ? "bg-blue-500 text-white shadow-md"
+                  : "hover:bg-gray-200/70 text-gray-700"
               )}
             >
-              <img src={item.icon} className="w-4 h-4" alt="" />
-              <p className="text-sm font-medium truncate">{item.name}</p>
+              <img
+                src={item.icon}
+                alt=""
+                className="w-4 h-4 object-contain"
+                loading="lazy"
+              />
+              <span className="font-medium">{item.name}</span>
             </li>
-          )
+          );
         })}
       </ul>
     </div>
-  )
+  );
+
+  const itemCount = activeLocation?.children?.length || 0;
 
   return (
-    <div id="finder" className="flex flex-col h-full bg-white overflow-hidden">
-      {/* HEADER */}
-      <div id="window-header" className="flex items-center justify-between p-2 border-b bg-gray-50 shrink-0">
+    <div className="flex flex-col h-full bg-gray-50/80 overflow-hidden rounded-xl shadow-2xl backdrop-blur-sm">
+      {/* Header */}
+      <header className="sticky top-0 z-30 flex items-center justify-between h-12 px-3 border-b border-gray-200/70 bg-white/80 backdrop-blur-md">
         <WindowControls target="finder" />
-        <div className="flex-1 text-center text-[11px] font-bold text-gray-500 uppercase tracking-tight">Finder</div>
-        <Search size={14} className="text-gray-400 mr-2" />
-      </div>
-
-      {/* BODY */}
-      <div className="flex flex-col sm:flex-row flex-1 overflow-hidden">
-        {/* SIDEBAR */}
-        <div className="sidebar bg-gray-50/50 border-r border-gray-200 p-3 max-sm:border-r-0 max-sm:border-b">
-          {renderList("Favorites", Object.values(locations))}
-          {locations.work?.children && renderList("Work", locations.work.children)}
+        <div className="flex items-center gap-2 text-sm font-medium text-gray-600 truncate max-w-[60%]">
+          <Folder size={14} className="text-blue-500 flex-shrink-0" />
+          <span className="truncate">{activeLocation?.name || "Finder"}</span>
         </div>
+        <Search size={16} className="text-gray-400" />
+      </header>
 
-        {/* CONTENT AREA */}
-        <div
-          ref={containerRef}
+      {/* Main */}
+      <div className="flex flex-1 flex-col lg:flex-row overflow-hidden">
+        {/* Sidebar */}
+        <aside
           className={clsx(
-            "content flex-1 relative bg-white",
-            "max-sm:grid max-sm:grid-cols-3 max-sm:gap-4 max-sm:p-4 max-sm:overflow-y-auto",
-            "sm:overflow-hidden" // Desktop needs absolute tracking
+            "bg-white/50 backdrop-blur-sm border-b lg:border-b-0 lg:border-r border-gray-200/70 p-3 space-y-3",
+            "lg:w-60 overflow-x-auto lg:overflow-y-auto",
+            "flex lg:flex-col gap-2"
           )}
-          onClick={() => clearSelection()}
         >
-          {(activeLocation?.children || []).length > 0 ? (
-            activeLocation.children.map((item) => {
-              const saved = positions[item.id]
-              const isSelected = selectedIds.includes(item.id)
+          {renderSection("Favorites", Object.values(locations))}
+          {locations.work?.children &&
+            renderSection("Work", locations.work.children, true)}{" "}
+          {/* hide on mobile */}
+        </aside>
 
-              return (
-                <div
-                  key={item.id}
-                  data-id={item.id}
-                  className={clsx(
-                    "finder-item flex flex-col items-center cursor-pointer select-none p-2 rounded-lg transition-colors",
-                    "sm:absolute sm:w-24", // Absolute on desktop
-                    isSelected ? "bg-blue-500/20" : "hover:bg-gray-100"
-                  )}
-                  style={{
-                    // Only apply inline transform on desktop to let CSS Grid handle mobile
-                    transform: saved && window.innerWidth > 640 
-                      ? `translate3d(${saved.x}px, ${saved.y}px, 0)` 
-                      : undefined
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    select(item.id, e.metaKey || e.ctrlKey)
-                  }}
-                  onDoubleClick={() => openItem(item)}
-                >
-                  <img
-                    src={item.icon}
-                    alt={item.name}
-                    className="w-12 h-12 sm:w-14 sm:h-14 object-contain pointer-events-none"
-                  />
-                  <p className="text-[10px] sm:text-xs text-center mt-1 w-full truncate px-1 text-gray-800">
-                    {item.name}
-                  </p>
-                </div>
-              )
-            })
+        {/* Content */}
+        <main
+          ref={containerRef}
+          onClick={clearSelection}
+          className="flex-1 relative bg-white/60 backdrop-blur-sm overflow-y-auto lg:overflow-hidden p-4 lg:p-5"
+        >
+          {itemCount > 0 ? (
+            <>
+              {/* Desktop draggable grid */}
+              <div className="hidden lg:block w-full h-full relative">
+                {activeLocation.children.map((item, index) => {
+                  const pos = positions[item.id];
+                  const initial = generateInitialPosition(index);
+                  const x = pos?.x ?? initial.x;
+                  const y = pos?.y ?? initial.y;
+                  const transform = `translate3d(${x}px, ${y}px, 0)`;
+                  const selected = selectedIds.includes(item.id);
+
+                  return (
+                    <FinderItem
+                      key={item.id}
+                      item={item}
+                      selected={selected}
+                      transform={transform}
+                      onSelect={handleSelect}
+                      onOpen={openItem}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Mobile / Tablet grid */}
+              <div className="lg:hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {activeLocation.children.map((item) => {
+                  const selected = selectedIds.includes(item.id);
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSelect(item.id, false);
+                      }}
+                      onDoubleClick={() => openItem(item)}
+                      className={clsx(
+                        "flex flex-col items-center justify-center rounded-2xl border border-gray-200/80 bg-white p-4 transition-all duration-200 active:scale-95 cursor-pointer shadow-sm hover:shadow-md",
+                        selected
+                          ? "ring-2 ring-blue-500 bg-blue-50/70"
+                          : "hover:border-blue-300"
+                      )}
+                    >
+                      <img
+                        src={item.icon}
+                        alt={item.name}
+                        className="w-14 h-14 object-contain"
+                        loading="lazy"
+                      />
+                      <p className="mt-2 text-xs font-medium text-center text-gray-700 break-words">
+                        {item.name}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
           ) : (
-            <div className="col-span-3 flex items-center justify-center w-full h-full text-gray-400 text-sm italic">
-              No items here
+            <div className="flex items-center justify-center h-full">
+              <div className="flex flex-col items-center gap-2 text-gray-400">
+                <Folder size={48} className="opacity-40" strokeWidth={1.5} />
+                <p className="text-lg font-medium text-gray-500">Empty Folder</p>
+                <p className="text-sm">No items in this location.</p>
+              </div>
             </div>
           )}
-        </div>
+        </main>
+      </div>
+
+      {/* Status Bar */}
+      <div className="h-8 px-4 border-t border-gray-200/70 bg-white/60 backdrop-blur-sm flex items-center justify-between text-xs text-gray-500">
+        <span>
+          {itemCount} {itemCount === 1 ? "item" : "items"}
+        </span>
+        <span className="truncate">{activeLocation?.path || ""}</span>
       </div>
     </div>
-  )
-}
+  );
+};
 
-const FinderWindow = WindowWrapper(Finder, "finder")
-export default FinderWindow
+const FinderWindow = WindowWrapper(Finder, "finder");
+export default FinderWindow;

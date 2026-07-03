@@ -2,58 +2,78 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { navIcons, navLinks } from "#constants";
 import useWindowStore from "#store/window.js";
-import clsx from "clsx";
 
 const Navbar = () => {
   const { openWindow } = useWindowStore();
   const [currentTime, setCurrentTime] = useState(dayjs());
 
-  // Update clock every minute
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(dayjs());
-    }, 10000); // Check every 10s to keep it accurate
+    }, 10000);
+
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <nav className="navbar-container">
-      {/* LEFT SECTION: Logo & Primary Links */}
-      <div className="nav-left">
-        <div className="flex items-center gap-2 cursor-pointer group">
-          <img 
-            src="/images/logo.svg" 
-            alt="logo" 
-            className="w-4 h-4 invert brightness-0 transition-transform group-hover:scale-110" 
+    <nav className="fixed top-0 left-0 z-50 w-full h-11 px-3 md:px-6 bg-black/70 backdrop-blur-xl border-b border-white/10 flex items-center justify-between text-white">
+
+      {/* LEFT */}
+      <div className="flex items-center gap-4 md:gap-8">
+
+        {/* Logo */}
+        <div className="flex items-center gap-2 cursor-pointer group shrink-0">
+          <img
+            src="/images/logo.svg"
+            alt="logo"
+            className="w-4 h-4 invert transition group-hover:scale-110"
           />
-          <p className="font-bold text-sm max-sm:hidden">Arun's Portfolio</p>
+
+          {/* Hide on mobile */}
+          <p className="hidden sm:block font-semibold text-sm whitespace-nowrap">
+            Arun's Portfolio
+          </p>
         </div>
 
-        <ul className="nav-links-list">
+        {/* Nav Links */}
+        <ul className="hidden md:flex items-center gap-6 text-sm">
           {navLinks.map(({ id, name, type }) => (
-            <li key={id} onClick={() => openWindow(type)} className="nav-link-item">
-              <p>{name}</p>
+            <li
+              key={id}
+              onClick={() => openWindow(type)}
+              className="cursor-pointer hover:text-gray-300 transition"
+            >
+              {name}
             </li>
           ))}
         </ul>
       </div>
 
-      {/* RIGHT SECTION: Icons & Clock */}
-      <div className="nav-right">
-        <ul className="nav-icons-list">
+      {/* RIGHT */}
+      <div className="flex items-center gap-3 md:gap-5">
+
+        {/* Icons */}
+        <ul className="hidden sm:flex items-center gap-3">
           {navIcons.map(({ id, img }) => (
-            <li key={id} className="flex items-center">
-              <img 
-                src={img} 
-                alt={`icon-${id}`} 
-                className="w-4 h-4 opacity-80 hover:opacity-100 transition-opacity cursor-pointer" 
+            <li key={id}>
+              <img
+                src={img}
+                alt=""
+                className="w-4 h-4 opacity-80 hover:opacity-100 cursor-pointer"
               />
             </li>
           ))}
         </ul>
-        <time className="nav-time">
-          {currentTime.format("ddd MMM D")} 
-          <span className="ml-1.5">{currentTime.format("h:mm A")}</span>
+
+        {/* Clock */}
+        <time className="text-xs sm:text-sm whitespace-nowrap">
+          <span className="hidden sm:inline">
+            {currentTime.format("ddd MMM D")}
+          </span>
+
+          <span className="ml-1">
+            {currentTime.format("h:mm A")}
+          </span>
         </time>
       </div>
     </nav>

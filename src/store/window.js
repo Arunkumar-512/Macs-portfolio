@@ -7,7 +7,9 @@ const useWindowStore = create(
     windows: WINDOW_CONFIG,
     nextZIndex: INITIAL_Z_INDEX + 1,
 
-    // 🟢 OPEN
+    // ==========================
+    // OPEN WINDOW
+    // ==========================
     openWindow: (windowKey, data = null) =>
       set((state) => {
         const win = state.windows[windowKey];
@@ -15,14 +17,20 @@ const useWindowStore = create(
 
         win.isOpen = true;
         win.isMinimized = false;
-        win.isMaximized = false; // 🔥 reset state
+
+        // Keep maximize state if reopening
         win.zIndex = state.nextZIndex;
-        win.data = data ?? win.data;
+
+        if (data !== null) {
+          win.data = data;
+        }
 
         state.nextZIndex++;
       }),
 
-    // 🔴 CLOSE
+    // ==========================
+    // CLOSE WINDOW
+    // ==========================
     closeWindow: (windowKey) =>
       set((state) => {
         const win = state.windows[windowKey];
@@ -31,11 +39,22 @@ const useWindowStore = create(
         win.isOpen = false;
         win.isMinimized = false;
         win.isMaximized = false;
-        win.zIndex = INITIAL_Z_INDEX;
         win.data = null;
+
+        // Restore previous bounds when reopened
+        if (win.previousBounds) {
+          win.x = win.previousBounds.x;
+          win.y = win.previousBounds.y;
+          win.width = win.previousBounds.width;
+          win.height = win.previousBounds.height;
+        }
+
+        win.zIndex = INITIAL_Z_INDEX;
       }),
 
-    // 🧠 FOCUS
+    // ==========================
+    // FOCUS WINDOW
+    // ==========================
     focusWindow: (windowKey) =>
       set((state) => {
         const win = state.windows[windowKey];
@@ -45,44 +64,81 @@ const useWindowStore = create(
         state.nextZIndex++;
       }),
 
-    // 🟡 MINIMIZE (🔥 FIXED)
+    // ==========================
+    // MINIMIZE
+    // ==========================
     minimizeWindow: (windowKey) =>
       set((state) => {
         const win = state.windows[windowKey];
         if (!win) return;
 
         win.isMinimized = true;
-
-        // 🔥 CRITICAL FIX
-        win.isMaximized = false;
         win.isOpen = true;
       }),
 
-    // 🔄 RESTORE
+    // ==========================
+    // RESTORE
+    // ==========================
     restoreWindow: (windowKey) =>
       set((state) => {
         const win = state.windows[windowKey];
         if (!win) return;
 
-        win.isMinimized = false;
-        win.isMaximized = false; // 🔥 important
         win.isOpen = true;
-        win.zIndex = state.nextZIndex;
+        win.isMinimized = false;
 
+        if (win.previousBounds && win.isMaximized) {
+          win.x = win.previousBounds.x;
+          win.y = win.previousBounds.y;
+          win.width = win.previousBounds.width;
+          win.height = win.previousBounds.height;
+        }
+
+        win.isMaximized = false;
+
+        win.zIndex = state.nextZIndex;
         state.nextZIndex++;
       }),
 
-    // 🟢 MAXIMIZE / RESTORE
+    // ==========================
+    // MAXIMIZE / RESTORE
+    // ==========================
     maximizeWindow: (windowKey) =>
       set((state) => {
         const win = state.windows[windowKey];
         if (!win) return;
 
-        // 🔄 toggle
-        win.isMaximized = !win.isMaximized;
-        
-        // 🔥 ensure not minimized
+        if (!win.isMaximized) {
+          // Save current size & position
+          win.previousBounds = {
+            x: win.x,
+            y: win.y,
+            width: win.width,
+            height: win.height,
+          };
+
+          // Maximize
+          win.x = 0;
+          win.y = 0;
+
+          win.width = window.innerWidth;
+          win.height = window.innerHeight - 38;
+
+          win.isMaximized = true;
+        } else {
+          // Restore previous size
+          if (win.previousBounds) {
+            win.x = win.previousBounds.x;
+            win.y = win.previousBounds.y;
+            win.width = win.previousBounds.width;
+            win.height = win.previousBounds.height;
+          }
+
+          win.isMaximized = false;
+        }
+
         win.isMinimized = false;
+        win.isOpen = true;
 
         win.zIndex = state.nextZIndex;
         state.nextZIndex++;
